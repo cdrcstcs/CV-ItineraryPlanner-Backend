@@ -13,38 +13,13 @@ import (
 
 
 
-func NewMainCreateAttractionController(ac con_inf.CreateAttractionController) inf.MainCreateAttractionController {
+func NewMainAttractionController(c con_inf.AttractionController) inf.MainAttractionController {
 	return &MainAttractionController{
-		CCon: ac,
+		Con: c,
 	}
 }
-func NewMainGetAttractionController(ac con_inf.GetAttractionController) inf.MainGetAttractionController {
-	return &MainAttractionController{
-		GCon: ac,
-	}
-}
-func NewMainGetAttractionByIdController(ac con_inf.GetAttractionByIdController) inf.MainGetAttractionByIdController {
-	return &MainAttractionController{
-		BCon: ac,
-	}
-}
-func NewMainUpdateAttractionController(ac con_inf.UpdateAttractionController) inf.MainUpdateAttractionController {
-	return &MainAttractionController{
-		UCon: ac,
-	}
-}
-func NewMainDeleteAttractionController(ac con_inf.DeleteAttractionController) inf.MainDeleteAttractionController {
-	return &MainAttractionController{
-		DCon: ac,
-	}
-}
-
 type MainAttractionController struct {
-	CCon con_inf.CreateAttractionController
-	BCon con_inf.GetAttractionByIdController
-	GCon con_inf.GetAttractionController
-	UCon con_inf.UpdateAttractionController
-	DCon con_inf.DeleteAttractionController
+	Con con_inf.AttractionController
 }
 
 func (m *MainAttractionController) CreateAttraction(c *gin.Context) {
@@ -53,7 +28,12 @@ func (m *MainAttractionController) CreateAttraction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
 		return
 	}
-	resp, err := m.CCon.CreateAttraction(ctx, &req)
+	resp, err := m.Con.CreateAttraction(ctx, &req)
+	if err != nil {
+        // Handle error returned from service
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error creating attraction: %s", err.Error())})
+        return
+    }
 	// we usually just use ok status for client
 	c.JSON(http.StatusOK, resp)
 }
@@ -64,7 +44,12 @@ func (m *MainAttractionController) GetAttraction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
 		return
 	}
-	resp, err := m.GCon.GetAttraction(ctx, &req)
+	resp, err := m.Con.GetAttraction(ctx, &req)
+	if err != nil {
+        // Handle error returned from service
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error getting attraction: %s", err.Error())})
+        return
+    }
 	// we usually just use ok status for client
 	c.JSON(http.StatusOK, resp)
 }
@@ -75,7 +60,12 @@ func (m *MainAttractionController) GetAttractionById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
 		return
 	}
-	resp, err := m.BCon.GetAttractionById(ctx, &req)
+	resp, err := m.Con.GetAttractionById(ctx, &req)
+	if err != nil {
+        // Handle error returned from service
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error getting by id attraction: %s", err.Error())})
+        return
+    }
 	// we usually just use ok status for client
 	c.JSON(http.StatusOK, resp)
 }
@@ -86,7 +76,12 @@ func (m *MainAttractionController) UpdateAttraction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
 		return
 	}
-	resp, err := m.UCon.UpdateAttraction(ctx, &req)
+	resp, err := m.Con.UpdateAttraction(ctx, &req)
+	if err != nil {
+        // Handle error returned from service
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error updating attraction: %s", err.Error())})
+        return
+    }
 	// we usually just use ok status for client
 	c.JSON(http.StatusOK, resp)
 }
@@ -97,7 +92,12 @@ func (m *MainAttractionController) DeleteAttraction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
 		return
 	}
-	resp, err := m.DCon.DeleteAttraction(ctx, &req)
+	resp, err := m.Con.DeleteAttraction(ctx, &req)
+	if err != nil {
+        // Handle error returned from service
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error deleting attraction: %s", err.Error())})
+        return
+    }
 	// we usually just use ok status for client
 	c.JSON(http.StatusOK, resp)
 }

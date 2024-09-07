@@ -1,75 +1,29 @@
 package test
 
-import (
+import(
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	// "itineraryplanner/common/custom_errs"
 	"itineraryplanner/dal/mock"
 
 	"itineraryplanner/models"
 	"itineraryplanner/service"
-	ser_mock "itineraryplanner/service/mock"
 )
 
-func ConfigCreateAttraction(t *testing.T) (context.Context, *mock.MockCreateAttractionDal, *ser_mock.MockAttractionDTOService, *service.AttractionService) {
+func ConfigAttraction(t *testing.T) (context.Context, *mock.MockAttractionDal, *service.AttractionService) {
 	ctrl := gomock.NewController(t)
 	ctx := context.Background()
-	mockC := mock.NewMockCreateAttractionDal(ctrl)
-	mockDTO := ser_mock.NewMockAttractionDTOService(ctrl)
-	attractionService := &service.AttractionService{CDal: mockC}
-	return ctx, mockC, mockDTO, attractionService
-}
-func ConfigGetAttraction(t *testing.T) (context.Context, *mock.MockGetAttractionDal, *ser_mock.MockAttractionDTOService, *service.AttractionService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockG := mock.NewMockGetAttractionDal(ctrl)
-	mockDTO := ser_mock.NewMockAttractionDTOService(ctrl)
-	attractionService := &service.AttractionService{GDal: mockG}
-	return ctx, mockG, mockDTO, attractionService
-}
-func ConfigGetAttractionById(t *testing.T) (context.Context, *mock.MockGetAttractionByIdDal, *ser_mock.MockAttractionDTOService, *service.AttractionService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockB := mock.NewMockGetAttractionByIdDal(ctrl)
-	mockDTO := ser_mock.NewMockAttractionDTOService(ctrl)
-	attractionService := &service.AttractionService{BDal: mockB}
-	return ctx, mockB, mockDTO, attractionService
+	mockA := mock.NewMockAttractionDal(ctrl)
+	attractionService := &service.AttractionService{Dal: mockA}
+	return ctx, mockA, attractionService
 }
 
-func ConfigUpdateAttraction(t *testing.T) (context.Context, *mock.MockUpdateAttractionDal, *ser_mock.MockAttractionDTOService, *service.AttractionService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockU := mock.NewMockUpdateAttractionDal(ctrl)
-	mockDTO := ser_mock.NewMockAttractionDTOService(ctrl)
-	attractionService := &service.AttractionService{UDal: mockU}
-	return ctx, mockU, mockDTO, attractionService
-}
-func ConfigDeleteAttraction(t *testing.T) (context.Context, *mock.MockDeleteAttractionDal, *ser_mock.MockAttractionDTOService, *service.AttractionService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockD := mock.NewMockDeleteAttractionDal(ctrl)
-	mockDTO := ser_mock.NewMockAttractionDTOService(ctrl)
-	attractionService := &service.AttractionService{DDal: mockD}
-	return ctx, mockD, mockDTO, attractionService
-}
 
-func ConfigConvertToDTOAttraction(t *testing.T) (context.Context, *ser_mock.MockFacadeDesignPatternService, *service.AttractionService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockC := mock.NewMockCreateAttractionDal(ctrl)
-	mockG := mock.NewMockGetAttractionDal(ctrl)
-	mockF := ser_mock.NewMockFacadeDesignPatternService(ctrl)
-	attractionService := &service.AttractionService{CDal: mockC, GDal: mockG}
-	return ctx, mockF, attractionService
-}
-
-func TestCreateAttraction(t *testing.T) {
-	ctx, mockC, mockDTO, attractionService := ConfigCreateAttraction(t)
+func TestCreateAttraction(t *testing.T){
+	ctx, mock, attractionService := ConfigAttraction(t)
 
 	type arg struct {
 		req *models.CreateAttractionReq
@@ -90,74 +44,41 @@ func TestCreateAttraction(t *testing.T) {
 				req: &models.CreateAttractionReq{
 					Name:         "test_name",
 					Address:      "test_address",
-					CoordinateId: "1",
-					TagIDs:       []string{"1", "2"},
+					X: 1,
+					Y: 2,						
+					TagIDs:       []string{""},
+					RatingId: "6642102153edf9e8fb3dfcda",
 				},
 			},
 			before: func(t *testing.T) {
-				mockC.EXPECT().CreateAttraction(ctx, gomock.Any()).Return(
+				mock.EXPECT().CreateAttraction(ctx, gomock.Any()).Return(
 					&models.Attraction{
 						Id:           "test_id",
 						Name:         "test_name",
 						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
+						X: 1,
+						Y: 2,							
+						TagIDs:       []string{"6641b096e8ee7b68f952efa8"},
+						RatingId: "6642102153edf9e8fb3dfcda",
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOAttraction(
-					ctx,
-					&models.Attraction{
-						Id:           "test_id",
-						Name:         "test_name",
-						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
-					},
-				).Return(
-					&models.AttractionDTO{
-						Id:      "test_id",
-						Name:    "test_name",
-						Address: "test_address",
-						Coordinate: &models.CoordinateDTO{
-							Id: "1",
-							X:  1,
-							Y:  1,
-						},
-						Tags: []*models.TagDTO{
-							{
-								Id:    "1",
-								Value: "test 1",
-							},
-							{
-								Id:    "2",
-								Value: "test 2",
-							},
-						},
-					},
-					nil,
-				).Do(func(ctx context.Context, att *models.Attraction) {
-					fmt.Println("ConvertDBOToDTOAttractionAttraction called with", att)
-				})
 			},
 			wantResp: &models.CreateAttractionResp{Attraction: &models.AttractionDTO{
 				Id:      "test_id",
 				Name:    "test_name",
 				Address: "test_address",
-				Coordinate: &models.CoordinateDTO{
-					Id: "1",
-					X:  1,
-					Y:  1,
-				},
+				X: 1,
+				Y: 2,	
 				Tags: []*models.TagDTO{
 					{
-						Id:    "1",
-						Value: "test 1",
+						Id:    "6641b096e8ee7b68f952efa8",
+						Value: "test",
 					},
-					{
-						Id:    "2",
-						Value: "test 2",
-					},
+				},
+				Rating: &models.RatingDTO{
+					Id: "6642102153edf9e8fb3dfcda",
+					Score: 5,
 				},
 			}},
 			wantErr: nil,
@@ -175,7 +96,7 @@ func TestCreateAttraction(t *testing.T) {
 }
 
 func TestGetAttractionById(t *testing.T) {
-	ctx, mockB, mockDTO, attractionService := ConfigGetAttractionById(t)
+	ctx, mock,  attractionService := ConfigAttraction(t)
 
 	type arg struct {
 		req *models.GetAttractionByIdReq
@@ -194,76 +115,41 @@ func TestGetAttractionById(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				req: &models.GetAttractionByIdReq{
-					Id: "test_id",
+					Id: "66423b801ce396edb58797e2",
 				},
 			},
 			before: func(t *testing.T) {
-				mockB.EXPECT().GetAttractionById(
+				mock.EXPECT().GetAttractionById(
 					ctx,
 					gomock.Any(),
 				).Return(
 					&models.Attraction{
-						Id:           "test_id",
-						Name:         "test_name",
-						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
+						Id:           "66423b801ce396edb58797e2",
+						Name:         "test",
+						Address:      "123 Paya Lebar",
+						X:1,
+						Y:2,
+						TagIDs:       []string{"6641b096e8ee7b68f952efa8"},
+						RatingId: "6642102153edf9e8fb3dfcda",
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOAttraction(
-					ctx,
-					&models.Attraction{
-						Id:           "test_id",
-						Name:         "test_name",
-						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
-					},
-				).Return(
-					&models.AttractionDTO{
-						Id:      "test_id",
-						Name:    "test_name",
-						Address: "test_address",
-						Coordinate: &models.CoordinateDTO{
-							Id: "1",
-							X:  1,
-							Y:  1,
-						},
-						Tags: []*models.TagDTO{
-							{
-								Id:    "1",
-								Value: "test 1",
-							},
-							{
-								Id:    "2",
-								Value: "test 2",
-							},
-						},
-					},
-					nil,
-				).Do(func(ctx context.Context, att *models.Attraction) {
-					fmt.Println("ConvertDBOToDTOAttraction called with", att)
-				})
 			},
 			wantResp: &models.GetAttractionByIdResp{Attraction: &models.AttractionDTO{
-				Id:      "test_id",
-				Name:    "test_name",
-				Address: "test_address",
-				Coordinate: &models.CoordinateDTO{
-					Id: "1",
-					X:  1,
-					Y:  1,
-				},
+				Id:           "66423b801ce396edb58797e2",
+				Name:         "test",
+				Address:      "123 Paya Lebar",
+				X:1,
+				Y:2,
 				Tags: []*models.TagDTO{
 					{
-						Id:    "1",
-						Value: "test 1",
+						Id:    "6641b096e8ee7b68f952efa8",
+						Value: "test",
 					},
-					{
-						Id:    "2",
-						Value: "test 2",
-					},
+				},
+				Rating: &models.RatingDTO{
+					Id: "6642102153edf9e8fb3dfcda",
+					Score: 5,
 				},
 			}},
 		},
@@ -281,7 +167,7 @@ func TestGetAttractionById(t *testing.T) {
 }
 
 func TestGetAttraction(t *testing.T) {
-	ctx, mockG, mockDTO, attractionService := ConfigGetAttraction(t)
+	ctx, mock, attractionService := ConfigAttraction(t)
 
 	type arg struct {
 		req *models.GetAttractionReq
@@ -302,72 +188,37 @@ func TestGetAttraction(t *testing.T) {
 				req: &models.GetAttractionReq{},
 			},
 			before: func(t *testing.T) {
-				mockG.EXPECT().GetAttraction(ctx).Return(
+				mock.EXPECT().GetAttraction(ctx).Return(
 					[]*models.Attraction{
 						{
-							Id:           "test_id",
-							Name:         "test_name",
-							Address:      "test_address",
-							CoordinateId: "1",
-							TagIDs:       []string{"1", "2"},
+							Id:           "66423b801ce396edb58797e2",
+							Name:         "test",
+							Address:      "123 Paya Lebar",
+							X:1,
+							Y:2,
+							TagIDs:       []string{"6641b096e8ee7b68f952efa8"},
+							RatingId: "6642102153edf9e8fb3dfcda",
 						},
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOAttraction(
-					ctx,
-					&models.Attraction{
-						Id:           "test_id",
-						Name:         "test_name",
-						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
-					},
-				).Return(
-					&models.AttractionDTO{
-						Id:      "test_id",
-						Name:    "test_name",
-						Address: "test_address",
-						Coordinate: &models.CoordinateDTO{
-							Id: "1",
-							X:  1,
-							Y:  1,
-						},
-						Tags: []*models.TagDTO{
-							{
-								Id:    "1",
-								Value: "test 1",
-							},
-							{
-								Id:    "2",
-								Value: "test 2",
-							},
-						},
-					},
-					nil,
-				).Do(func(ctx context.Context, att *models.Attraction) {
-					fmt.Println("ConvertDBOToDTOAttraction called with", att)
-				})
 			},
 			wantResp: &models.GetAttractionResp{Attractions: []*models.AttractionDTO{
 				{
-					Id:      "test_id",
-					Name:    "test_name",
-					Address: "test_address",
-					Coordinate: &models.CoordinateDTO{
-						Id: "1",
-						X:  1,
-						Y:  1,
-					},
+					Id:           "66423b801ce396edb58797e2",
+					Name:         "test",
+					Address:      "123 Paya Lebar",
+					X:1,
+					Y:2,
 					Tags: []*models.TagDTO{
 						{
-							Id:    "1",
-							Value: "test 1",
+							Id:    "6641b096e8ee7b68f952efa8",
+							Value: "test",
 						},
-						{
-							Id:    "2",
-							Value: "test 2",
-						},
+					},
+					Rating: &models.RatingDTO{
+						Id: "6642102153edf9e8fb3dfcda",
+						Score: 5,
 					},
 				},
 			}},
@@ -386,7 +237,7 @@ func TestGetAttraction(t *testing.T) {
 }
 
 func TestUpdateAttraction(t *testing.T) {
-	ctx, mockU, mockDTO, attractionService := ConfigUpdateAttraction(t)
+	ctx, mock, attractionService := ConfigAttraction(t)
 
 	type arg struct {
 		req *models.UpdateAttractionReq
@@ -405,77 +256,44 @@ func TestUpdateAttraction(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				req: &models.UpdateAttractionReq{
-					Id:           "test_id",
-					Name:         "test_name",
-					Address:      "test_address",
-					CoordinateId: "1",
-					TagIDs:       []string{"1", "2"},
+					Id:           "66423b801ce396edb58797e2",
+					Name:         "test2",
+					Address:      "123 Paya Lebar",
+					X:1,
+					Y:2,
+					TagIDs:       []string{"6641b096e8ee7b68f952efa8"},
+					RatingId: "6642102153edf9e8fb3dfcda",
 				},
 			},
 			before: func(t *testing.T) {
-				mockU.EXPECT().UpdateAttraction(ctx, gomock.Any()).Return(
+				mock.EXPECT().UpdateAttraction(ctx, gomock.Any()).Return(
 					&models.Attraction{
-						Id:           "test_id",
-						Name:         "test_name",
-						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
+						Id:           "66423b801ce396edb58797e2",
+						Name:         "test2",
+						Address:      "123 Paya Lebar",
+						X:1,
+						Y:2,
+						TagIDs:       []string{"6641b096e8ee7b68f952efa8"},
+						RatingId: "6642102153edf9e8fb3dfcda",
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOAttraction(
-					ctx,
-					&models.Attraction{
-						Id:           "test_id",
-						Name:         "test_name",
-						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
-					},
-				).Return(
-					&models.AttractionDTO{
-						Id:      "test_id",
-						Name:    "test_name",
-						Address: "test_address",
-						Coordinate: &models.CoordinateDTO{
-							Id: "1",
-							X:  1,
-							Y:  1,
-						},
-						Tags: []*models.TagDTO{
-							{
-								Id:    "1",
-								Value: "test 1",
-							},
-							{
-								Id:    "2",
-								Value: "test 2",
-							},
-						},
-					},
-					nil,
-				).Do(func(ctx context.Context, att *models.Attraction) {
-					fmt.Println("ConvertDBOToDTOAttractionAttraction called with", att)
-				})
 			},
 			wantResp: &models.UpdateAttractionResp{Attraction: &models.AttractionDTO{
-				Id:      "test_id",
-				Name:    "test_name",
-				Address: "test_address",
-				Coordinate: &models.CoordinateDTO{
-					Id: "1",
-					X:  1,
-					Y:  1,
-				},
+				Id:           "66423b801ce396edb58797e2",
+				Name:         "test2",
+				Address:      "123 Paya Lebar",
+				X:1,
+				Y:2,
 				Tags: []*models.TagDTO{
 					{
-						Id:    "1",
-						Value: "test 1",
+						Id:    "6641b096e8ee7b68f952efa8",
+						Value: "test",
 					},
-					{
-						Id:    "2",
-						Value: "test 2",
-					},
+				},
+				Rating: &models.RatingDTO{
+					Id: "6642102153edf9e8fb3dfcda",
+					Score: 5,
 				},
 			}},
 			wantErr: nil,
@@ -493,7 +311,7 @@ func TestUpdateAttraction(t *testing.T) {
 }
 
 func TestDeleteAttraction(t *testing.T) {
-	ctx, mockD, mockDTO, attractionService := ConfigDeleteAttraction(t)
+	ctx, mock, attractionService := ConfigAttraction(t)
 
 	type arg struct {
 		req *models.DeleteAttractionReq
@@ -512,77 +330,42 @@ func TestDeleteAttraction(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				req: &models.DeleteAttractionReq{
-					Id: "test_id",
+					Id:           "66423b801ce396edb58797e2",
 				},
 			},
 			before: func(t *testing.T) {
-				mockD.EXPECT().DeleteAttraction(
+				mock.EXPECT().DeleteAttraction(
 					ctx,
 					gomock.Any(),
 				).Return(
 					&models.Attraction{
-						Id:           "test_id",
-						Name:         "test_name",
-						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
+						Id:           "66423b801ce396edb58797e2",
+						Name:         "test2",
+						Address:      "123 Paya Lebar",
+						X:1,
+						Y:2,
+						TagIDs:       []string{"6641b096e8ee7b68f952efa8"},
+						RatingId: "6642102153edf9e8fb3dfcda",
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOAttraction(
-					ctx,
-					&models.Attraction{
-						Id:           "test_id",
-						Name:         "test_name",
-						Address:      "test_address",
-						CoordinateId: "1",
-						TagIDs:       []string{"1", "2"},
-					},
-				).Return(
-					&models.AttractionDTO{
-						Id:      "test_id",
-						Name:    "test_name",
-						Address: "test_address",
-						Coordinate: &models.CoordinateDTO{
-							Id: "1",
-							X:  1,
-							Y:  1,
-						},
-						Tags: []*models.TagDTO{
-							{
-								Id:    "1",
-								Value: "test 1",
-							},
-							{
-								Id:    "2",
-								Value: "test 2",
-							},
-						},
-					},
-					nil,
-				).Do(func(ctx context.Context, att *models.Attraction) {
-					fmt.Println("ConvertDBOToDTOAttraction called with", att)
-				})
 			},
 			wantResp: &models.DeleteAttractionResp{
 				Attraction: &models.AttractionDTO{
-					Id:      "test_id",
-					Name:    "test_name",
-					Address: "test_address",
-					Coordinate: &models.CoordinateDTO{
-						Id: "1",
-						X:  1,
-						Y:  1,
-					},
+					Id:           "66423b801ce396edb58797e2",
+					Name:         "test2",
+					Address:      "123 Paya Lebar",
+					X:1,
+					Y:2,
 					Tags: []*models.TagDTO{
 						{
-							Id:    "1",
-							Value: "test 1",
+							Id:    "6641b096e8ee7b68f952efa8",
+							Value: "test",
 						},
-						{
-							Id:    "2",
-							Value: "test 2",
-						},
+					},
+					Rating: &models.RatingDTO{
+						Id: "6642102153edf9e8fb3dfcda",
+						Score: 5,
 					},
 				},
 			},
@@ -601,8 +384,8 @@ func TestDeleteAttraction(t *testing.T) {
 }
 
 func TestConvertAttToDTOAttraction(t *testing.T) {
-	ctx, mockF, attractionService := ConfigConvertToDTOAttraction(t)
-
+	ctx:= context.Background()
+	attractionService := &service.AttractionService{}
 	type arg struct {
 		req *models.Attraction
 		ctx context.Context
@@ -610,7 +393,6 @@ func TestConvertAttToDTOAttraction(t *testing.T) {
 
 	tests := []struct {
 		name     string
-		before   func(t *testing.T)
 		arg      arg
 		wantResp *models.AttractionDTO
 		wantErr  error
@@ -619,56 +401,31 @@ func TestConvertAttToDTOAttraction(t *testing.T) {
 			name: "success",
 			arg: arg{
 				req: &models.Attraction{
-					Id:           "test_id",
-					Name:         "test_name",
-					Address:      "test_address",
-					CoordinateId: "1",
-					TagIDs:       []string{"1"},
+					Id:           "66423b801ce396edb58797e2",
+					Name:         "test2",
+					Address:      "123 Paya Lebar",
+					X:1,
+					Y:2,
+					TagIDs:       []string{"6641b096e8ee7b68f952efa8"},
+					RatingId: "6642102153edf9e8fb3dfcda",
 				},
 				ctx: ctx,
 			},
-			before: func(t *testing.T) {
-				mockF.EXPECT().Execute(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					&models.RespFacade{
-						GTRB: &models.GetTagByIdResp{
-							Tag: &models.TagDTO{
-								Id:    "1",
-								Value: "test 1",
-							},
-						},
-					},
-					nil,
-				)
-				mockF.EXPECT().Execute(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					&models.RespFacade{
-						GCRB: &models.GetCoordinateByIdResp{
-							Coordinate: &models.CoordinateDTO{
-								Id: "1",
-								X:  1,
-								Y:  1,
-							},
-						},
-					},
-					nil,
-				)
-			},
 			wantResp: &models.AttractionDTO{
-				Id:      "test_id",
-				Name:    "test_name",
-				Address: "test_address",
-				Coordinate: &models.CoordinateDTO{
-					X: 1,
-					Y: 2,
-				},
+				Id:           "66423b801ce396edb58797e2",
+				Name:         "test2",
+				Address:      "123 Paya Lebar",
+				X:1,
+				Y:2,
 				Tags: []*models.TagDTO{
 					{
-						Id:    "1",
-						Value: "test 1",
+						Id:    "6641b096e8ee7b68f952efa8",
+						Value: "test",
 					},
-					{
-						Id:    "2",
-						Value: "test 2",
-					},
+				},
+				Rating: &models.RatingDTO{
+					Id: "6642102153edf9e8fb3dfcda",
+					Score: 5,
 				},
 			},
 			wantErr: nil,
@@ -677,7 +434,6 @@ func TestConvertAttToDTOAttraction(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.before(t)
 			gotResp, err := attractionService.ConvertDBOToDTOAttraction(tt.arg.ctx, tt.arg.req)
 
 			assert.Equal(t, tt.wantResp, gotResp)

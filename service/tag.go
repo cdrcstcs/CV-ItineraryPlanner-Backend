@@ -13,40 +13,13 @@ import (
 	"itineraryplanner/service/inf"
 )
 
-func NewCreateTagService(cdal dal_inf.CreateTagDal) inf.CreateTagService {
+func NewTagService(dal dal_inf.TagDal) inf.TagService {
 	return &TagService{
-		CDal: cdal,
+		Dal: dal,
 	}
-}
-func NewGetTagByIdService(bdal dal_inf.GetTagByIdDal) inf.GetTagByIdService {
-	return &TagService{
-		BDal: bdal,
-	}
-}
-func NewGetTagService(gdal dal_inf.GetTagDal) inf.GetTagService {
-	return &TagService{
-		GDal: gdal,
-	}
-}
-func NewUpdateTagService(udal dal_inf.UpdateTagDal) inf.UpdateTagService {
-	return &TagService{
-		UDal: udal,
-	}
-}
-func NewDeleteTagService(ddal dal_inf.DeleteTagDal) inf.DeleteTagService {
-	return &TagService{
-		DDal: ddal,
-	}
-}
-func NewTagDTOService() inf.TagDTOService {
-	return &TagService{}
 }
 type TagService struct {
-	CDal dal_inf.CreateTagDal
-	BDal dal_inf.GetTagByIdDal
-	GDal dal_inf.GetTagDal
-	UDal dal_inf.UpdateTagDal
-	DDal dal_inf.DeleteTagDal
+	Dal dal_inf.TagDal
 }
 
 func (t *TagService) CreateTag(ctx context.Context, req *models.CreateTagReq) (*models.CreateTagResp, error) {
@@ -57,7 +30,7 @@ func (t *TagService) CreateTag(ctx context.Context, req *models.CreateTagReq) (*
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
 
-	tag, err = t.CDal.CreateTag(ctx, tag)
+	tag, err = t.Dal.CreateTag(ctx, tag)
 	if err != nil {
 		// TODO logging
 		return nil, err
@@ -86,7 +59,7 @@ func (t *TagService) ConvertDBOToDTOTag(ctx context.Context, tag *models.Tag) (*
 }
 
 func (t *TagService) GetTagById(ctx context.Context, req *models.GetTagByIdReq) (*models.GetTagByIdResp, error) {
-	Tag, err := t.BDal.GetTagById(ctx, req.Id)
+	Tag, err := t.Dal.GetTagById(ctx, req.Id)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
@@ -94,8 +67,8 @@ func (t *TagService) GetTagById(ctx context.Context, req *models.GetTagByIdReq) 
 	Tag1 := &models.Tag{}
 	ok := copier.Copy(Tag1, Tag)
 	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
+		return nil, errors.Wrap(custom_errs.ServerError, ok.Error())
 	}
 	dto, err := t.ConvertDBOToDTOTag(ctx, Tag1)
 	if err != nil {
@@ -106,7 +79,7 @@ func (t *TagService) GetTagById(ctx context.Context, req *models.GetTagByIdReq) 
 }
 
 func (t *TagService) GetTag(ctx context.Context, req *models.GetTagReq) (*models.GetTagResp, error) {
-	Tags, err := t.GDal.GetTag(ctx)
+	Tags, err := t.Dal.GetTag(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
@@ -114,8 +87,8 @@ func (t *TagService) GetTag(ctx context.Context, req *models.GetTagReq) (*models
 	Tag1 := []models.Tag{}
 	ok := copier.Copy(Tag1, Tags)
 	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
+		return nil, errors.Wrap(custom_errs.ServerError, ok.Error())
 	}
 	dtos := make([]*models.TagDTO, 0)
 	for _, v := range Tag1 {
@@ -137,7 +110,7 @@ func (t *TagService) UpdateTag(ctx context.Context, req *models.UpdateTagReq) (*
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
 
-	tag, err = t.UDal.UpdateTag(ctx, tag)
+	tag, err = t.Dal.UpdateTag(ctx, tag)
 	if err != nil {
 		// TODO logging
 		return nil, err
@@ -152,7 +125,7 @@ func (t *TagService) UpdateTag(ctx context.Context, req *models.UpdateTagReq) (*
 }
 
 func (t *TagService) DeleteTag(ctx context.Context, req *models.DeleteTagReq) (*models.DeleteTagResp, error) {
-	tag, err := t.DDal.DeleteTag(ctx, req.Id)
+	tag, err := t.Dal.DeleteTag(ctx, req.Id)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
@@ -160,8 +133,8 @@ func (t *TagService) DeleteTag(ctx context.Context, req *models.DeleteTagReq) (*
 	tag1 := &models.Tag{}
 	ok := copier.Copy(tag1, tag)
 	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
+		return nil, errors.Wrap(custom_errs.ServerError, ok.Error())
 	}
 	dto, err := t.ConvertDBOToDTOTag(ctx, tag1)
 	if err != nil {

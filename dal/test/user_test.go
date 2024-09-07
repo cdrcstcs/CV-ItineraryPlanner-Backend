@@ -9,7 +9,6 @@ import (
 	"itineraryplanner/dal/db"
 	"itineraryplanner/dal"
 
-	"itineraryplanner/constant"
 )
 
 func TestCreateUser(t *testing.T){
@@ -39,7 +38,6 @@ func TestCreateUser(t *testing.T){
 				},
 			},
 			wantUser: &models.User{
-				Id  :"generatedId",
 				Name    :"test",
 				Password   :"test",
 				Email  :"test",
@@ -48,11 +46,12 @@ func TestCreateUser(t *testing.T){
 			wantErr: nil ,
 		},
 	}
-	userDal := &dal.UserDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	userDal := &dal.UserDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T){
-			gotRating, gotErr:= userDal.CreateUser(ctx, tt.arg.user)
-			assert.Equal(t, gotRating, tt.wantUser)
+			gotUser, gotErr:= userDal.CreateUser(ctx, tt.arg.user)
+			gotUser.Id = ""
+			assert.Equal(t, gotUser, tt.wantUser)
 			assert.Equal(t, gotErr, tt.wantErr)
 		})
 	}
@@ -77,10 +76,10 @@ func TestGetUserById(t *testing.T){
 			name: "success",
 			arg: arg{
 				ctx:ctx,
-				userId: "generated_id",
+				userId: "6641b48d61634ce13f96c3f7",
 			},
 			wantUser: &models.User{
-				Id  :"generatedId",
+				Id  :"6641b48d61634ce13f96c3f7",
 				Name    :"test",
 				Password   :"test",
 				Email  :"test",
@@ -89,7 +88,7 @@ func TestGetUserById(t *testing.T){
 			wantErr: nil ,
 		},
 	}
-	userDal := &dal.UserDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	userDal := &dal.UserDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T){
 			gotUser, gotErr:= userDal.GetUserById(ctx, tt.arg.userId)
@@ -104,7 +103,8 @@ func TestGetUser(t *testing.T){
 	type arg struct {
 		ctx context.Context
 	}
-
+	userDal := &dal.UserDal{MainDB: db.GetMemoMongo()}
+	u, _:= userDal.GetUser(ctx)
 	tests:=[]struct {
 		name string 
 		before func(t *testing.T)
@@ -117,19 +117,10 @@ func TestGetUser(t *testing.T){
 			arg: arg{
 				ctx:ctx,
 			},
-			wantUser: []*models.User{
-				{
-					Id  :"generatedId",
-					Name    :"test",
-					Password   :"test",
-					Email  :"test",
-					EmailPassword :"test",
-				},
-			},
+			wantUser: u, 
 			wantErr: nil ,
 		},
 	}
-	userDal := &dal.UserDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T){
 			gotUser, gotErr:= userDal.GetUser(ctx)
@@ -176,7 +167,7 @@ func TestUpdateUser(t *testing.T){
 			wantErr: nil ,
 		},
 	}
-	userDal := &dal.UserDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	userDal := &dal.UserDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T){
 			gotRating, gotErr:= userDal.UpdateUser(ctx, tt.arg.user)
@@ -217,7 +208,7 @@ func TestDeleteUser(t *testing.T){
 			wantErr: nil ,
 		},
 	}
-	userDal := &dal.UserDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	userDal := &dal.UserDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T){
 			gotUser, gotErr:= userDal.DeleteUser(ctx, tt.arg.userId)

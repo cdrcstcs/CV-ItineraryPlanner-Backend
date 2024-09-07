@@ -13,46 +13,13 @@ import (
 	"itineraryplanner/service/inf"
 )
 
-func NewCreateUserService(cdal dal_inf.CreateUserDal) inf.CreateUserService {
+func NewUserService(dal dal_inf.UserDal) inf.UserService {
 	return &UserService{
-		CDal: cdal,
+		Dal: dal,
 	}
-}
-func NewGetUserByIdService(bdal dal_inf.GetUserByIdDal) inf.GetUserByIdService {
-	return &UserService{
-		BDal: bdal,
-	}
-}
-func NewGetUserService(gdal dal_inf.GetUserDal) inf.GetUserService {
-	return &UserService{
-		GDal: gdal,
-	}
-}
-func NewUpdateUserService(udal dal_inf.UpdateUserDal) inf.UpdateUserService {
-	return &UserService{
-		UDal: udal,
-	}
-}
-func NewDeleteUserService(ddal dal_inf.DeleteUserDal) inf.DeleteUserService {
-	return &UserService{
-		DDal: ddal,
-	}
-}
-func NewLoginUserService(ldal dal_inf.LoginUserDal) inf.LoginUserService {
-	return &UserService{
-		LDal: ldal,
-	}
-}
-func NewUserDTOService() inf.UserDTOService {
-	return &UserService{}
 }
 type UserService struct {
-	CDal dal_inf.CreateUserDal
-	BDal dal_inf.GetUserByIdDal
-	GDal dal_inf.GetUserDal
-	UDal dal_inf.UpdateUserDal
-	DDal dal_inf.DeleteUserDal
-	LDal dal_inf.LoginUserDal
+	Dal dal_inf.UserDal
 }
 
 func (a *UserService) CreateUser(ctx context.Context, req *models.CreateUserReq) (*models.CreateUserResp, error) {
@@ -63,7 +30,7 @@ func (a *UserService) CreateUser(ctx context.Context, req *models.CreateUserReq)
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
 
-	user, err = a.CDal.CreateUser(ctx, user)
+	user, err = a.Dal.CreateUser(ctx, user)
 	if err != nil {
 		// TODO logging
 		return nil, err
@@ -76,21 +43,6 @@ func (a *UserService) CreateUser(ctx context.Context, req *models.CreateUserReq)
 	}
 
 	return &models.CreateUserResp{User: dto}, nil
-}
-
-func (a *UserService) LoginUser(ctx context.Context, req *models.LoginUserReq) (*models.LoginUserResp, error) {
-	user := &models.User{}
-	err := copier.Copy(user, req)
-	if err != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
-	}
-	check, err := a.LDal.LoginUser(ctx, user)
-	if err != nil {
-		// TODO logging
-		return nil, err
-	}
-	return &models.LoginUserResp{Check: check}, nil
 }
 
 func (u *UserService) ConvertDBOToDTOUser(ctx context.Context, use *models.User) (*models.UserDTO, error) {
@@ -107,14 +59,14 @@ func (u *UserService) ConvertDBOToDTOUser(ctx context.Context, use *models.User)
 }
 
 func (u *UserService) GetUserById(ctx context.Context, req *models.GetUserByIdReq) (*models.GetUserByIdResp, error) {
-	User, err := u.BDal.GetUserById(ctx, req.Id)
+	User, err := u.Dal.GetUserById(ctx, req.Id)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
 
 	User1 := &models.User{}
-	ok := copier.Copy(User1, User)
-	if ok != nil {
+	err = copier.Copy(User1, User)
+	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
@@ -127,7 +79,7 @@ func (u *UserService) GetUserById(ctx context.Context, req *models.GetUserByIdRe
 }
 
 func (u *UserService) GetUser(ctx context.Context, req *models.GetUserReq) (*models.GetUserResp, error) {
-	Users, err := u.GDal.GetUser(ctx)
+	Users, err := u.Dal.GetUser(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
@@ -135,8 +87,8 @@ func (u *UserService) GetUser(ctx context.Context, req *models.GetUserReq) (*mod
 	User1 := []models.User{}
 	ok := copier.Copy(User1, Users)
 	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
+		return nil, errors.Wrap(custom_errs.ServerError, ok.Error())
 	}
 	dtos := make([]*models.UserDTO, 0)
 	for _, v := range User1 {
@@ -157,7 +109,7 @@ func (u *UserService) UpdateUser(ctx context.Context, req *models.UpdateUserReq)
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
 
-	user, err = u.UDal.UpdateUser(ctx, user)
+	user, err = u.Dal.UpdateUser(ctx, user)
 	if err != nil {
 		// TODO logging
 		return nil, err
@@ -172,7 +124,7 @@ func (u *UserService) UpdateUser(ctx context.Context, req *models.UpdateUserReq)
 }
 
 func (u *UserService) DeleteUser(ctx context.Context, req *models.DeleteUserReq) (*models.DeleteUserResp, error) {
-	user, err := u.DDal.DeleteUser(ctx, req.Id)
+	user, err := u.Dal.DeleteUser(ctx, req.Id)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
@@ -180,8 +132,8 @@ func (u *UserService) DeleteUser(ctx context.Context, req *models.DeleteUserReq)
 	user1 := &models.User{}
 	ok := copier.Copy(user1, user)
 	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
+		return nil, errors.Wrap(custom_errs.ServerError, ok.Error())
 	}
 	dto, err := u.ConvertDBOToDTOUser(ctx, user1)
 	if err != nil {

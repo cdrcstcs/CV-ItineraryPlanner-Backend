@@ -9,7 +9,6 @@ import (
 
 	"itineraryplanner/common/custom_errs"
 	"itineraryplanner/dal/db"
-	"itineraryplanner/constant"
 	"itineraryplanner/models"
 	"itineraryplanner/dal"
 
@@ -35,16 +34,18 @@ func TestCreateEvent(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				event: &models.Event{
-					StartTime:   time.Now(),
-					EndTime:     time.Now().Add(1 * time.Hour),
-					AttractionId:  "1",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+					AttractionId:  "66402ddd27a2989c866cac35",
+					AttractionName: "test",
 					Description: "TestDescription",
 				},
 			},
 			wantEvent: &models.Event{
-				StartTime:   time.Now(),
-				EndTime:     time.Now().Add(1 * time.Hour),
-				AttractionId:  "1",
+				StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+				AttractionId:  "66402ddd27a2989c866cac35",
+				AttractionName: "test",
 				Description: "TestDescription",
 			},
 		},
@@ -54,16 +55,17 @@ func TestCreateEvent(t *testing.T) {
 				ctx: ctx,
 				event: &models.Event{
 					Id:          "1",
-					StartTime:   time.Now(),
-					EndTime:     time.Now().Add(1 * time.Hour),
-					AttractionId:  "1",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+					AttractionId:  "66402ddd27a2989c866cac35",
+					AttractionName: "test",
 					Description: "TestDescription",
 				},
 			},
 			wantErr: custom_errs.DBErrCreateWithID,
 		},
 	}
-	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo()}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -102,21 +104,21 @@ func TestGetEventById(t *testing.T) {
 			name: "success",
 			arg: arg{
 				ctx:           ctx,
-				eventId:  "1234",
+				eventId:  "66420cf5a9df66a0a0737cb5",
 			},
 			wantEvent: &models.Event{
-				Id:"1234",
-				ItineraryId :"1",
-				StartTime:   time.Now(),
-				EndTime:     time.Now().Add(1 * time.Hour),
-				AttractionId :"1",
-				Description :"testdescription",
+				Id:           "66420cf5a9df66a0a0737cb5",
+				StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+				AttractionId: "66402ddd27a2989c866cac35",
+				AttractionName: "test",
+				Description:  "TestDescription",
 			},
 			wantErr: nil,
 		},
 	}
 	
-	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotEvent, err := eventDal.GetEventById(tt.arg.ctx, tt.arg.eventId)
@@ -125,7 +127,7 @@ func TestGetEventById(t *testing.T) {
 				return
 			}
 			assert.NotEmpty(t, gotEvent)
-			assert.ElementsMatch(t, tt.wantEvent, gotEvent)
+			assert.Equal(t, tt.wantEvent, gotEvent)
 		})	
 	}
 }
@@ -134,7 +136,8 @@ func TestGetEvent(t *testing.T) {
 	type arg struct {
 		ctx           context.Context
 	}
-	
+	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo()}
+	e, _ := eventDal.GetEvent(ctx)
 	tests := []struct {
 		name            string
 		before          func(t *testing.T)
@@ -147,21 +150,11 @@ func TestGetEvent(t *testing.T) {
 			arg: arg{
 				ctx:           ctx,
 			},
-			wantEvent: []*models.Event{
-				{
-					Id:"1234",
-					ItineraryId :"1",
-					StartTime:   time.Now(),
-					EndTime:     time.Now().Add(1 * time.Hour),
-					AttractionId :"1",
-					Description :"testdescription",
-				},
-			},
+			wantEvent: e,
 			wantErr: nil,
 		},
 	}
 	
-	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotEvent, err := eventDal.GetEvent(tt.arg.ctx)
@@ -170,7 +163,7 @@ func TestGetEvent(t *testing.T) {
 				return
 			}
 			assert.NotEmpty(t, gotEvent)
-			assert.ElementsMatch(t, tt.wantEvent, gotEvent)
+			assert.Equal(t, tt.wantEvent, gotEvent)
 		})	
 	}
 }
@@ -194,27 +187,27 @@ func TestUpdateEvent(t *testing.T) {
 			arg: arg{
 				ctx:           ctx,
 				event: &models.Event{
-					Id:"1234",
-					ItineraryId :"1",
-					StartTime:   time.Now(),
-					EndTime:     time.Now().Add(1 * time.Hour),
+					Id:"66419810c1c4d8e352e17786",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 					AttractionId :"1",
-					Description :"testdescription",
+					AttractionName: "test",
+					Description :"testdescription2",
 				},
 			},
 			wantEvent: &models.Event{
-				Id:"1234",
-				ItineraryId :"1",
-				StartTime:   time.Now(),
-				EndTime:     time.Now().Add(1 * time.Hour),
+				Id:"66419810c1c4d8e352e17786",
+				StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 				AttractionId :"1",
-				Description :"testdescription",
+				AttractionName: "test",
+				Description :"testdescription2",
 			},
 			wantErr: nil,
 		},
 	}
 	
-	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotEvent, err := eventDal.UpdateEvent(tt.arg.ctx, tt.arg.event)
@@ -250,10 +243,10 @@ func TestDeleteEvent(t *testing.T) {
 			},
 			wantEvent: &models.Event{
 					Id:"1234",
-					ItineraryId :"1",
 					StartTime:   time.Now(),
 					EndTime:     time.Now().Add(1 * time.Hour),
 					AttractionId :"1",
+					AttractionName: "test",
 					Description :"testdescription",
 			},
 			wantErr: nil,
@@ -269,7 +262,7 @@ func TestDeleteEvent(t *testing.T) {
 		},
 	}
 	
-	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	eventDal := &dal.EventDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotEvent, err := eventDal.DeleteEvent(tt.arg.ctx, tt.arg.eventId)

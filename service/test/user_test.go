@@ -3,70 +3,23 @@ package test
 import (
 	"context"
 	"testing"
-	"fmt"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
 	"itineraryplanner/dal/mock"
 	"itineraryplanner/models"
 	"itineraryplanner/service"
-	ser_mock "itineraryplanner/service/mock"
 )
 
-func ConfigCreateUser(t *testing.T) (context.Context, *mock.MockCreateUserDal, *ser_mock.MockUserDTOService, *service.UserService) {
+func ConfigUser(t *testing.T) (context.Context, *mock.MockUserDal, *service.UserService) {
 	ctrl := gomock.NewController(t)
 	ctx := context.Background()
-	mockC := mock.NewMockCreateUserDal(ctrl)
-	mockDTO := ser_mock.NewMockUserDTOService(ctrl)
-	userService := &service.UserService{CDal: mockC}
-	return ctx, mockC, mockDTO, userService
+	mock := mock.NewMockUserDal(ctrl)
+	userService := &service.UserService{Dal: mock}
+	return ctx, mock, userService
 }
-
-func ConfigGetUser(t *testing.T) (context.Context, *mock.MockGetUserDal, *ser_mock.MockUserDTOService, *service.UserService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockG := mock.NewMockGetUserDal(ctrl)
-	mockDTO := ser_mock.NewMockUserDTOService(ctrl)
-	userService := &service.UserService{GDal: mockG}
-	return ctx, mockG, mockDTO, userService
-}
-
-func ConfigGetUserById(t *testing.T) (context.Context, *mock.MockGetUserByIdDal, *ser_mock.MockUserDTOService, *service.UserService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockB := mock.NewMockGetUserByIdDal(ctrl)
-	mockDTO := ser_mock.NewMockUserDTOService(ctrl)
-	userService := &service.UserService{BDal: mockB}
-	return ctx, mockB, mockDTO, userService
-}
-
-func ConfigUpdateUser(t *testing.T) (context.Context, *mock.MockUpdateUserDal, *ser_mock.MockUserDTOService, *service.UserService){
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockU := mock.NewMockUpdateUserDal(ctrl)
-	mockDTO := ser_mock.NewMockUserDTOService(ctrl)
-	userService := &service.UserService{UDal: mockU}
-	return ctx, mockU, mockDTO, userService
-}
-func ConfigDeleteUser(t *testing.T) (context.Context, *mock.MockDeleteUserDal, *ser_mock.MockUserDTOService, *service.UserService){
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockD := mock.NewMockDeleteUserDal(ctrl)
-	mockDTO := ser_mock.NewMockUserDTOService(ctrl)
-	userService := &service.UserService{DDal: mockD}
-	return ctx, mockD, mockDTO, userService
-}
-func ConfigUserDTOService(t *testing.T) (context.Context, *service.UserService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockC := mock.NewMockCreateUserDal(ctrl)
-	mockG := mock.NewMockGetUserDal(ctrl)
-	tagDTOService := &service.UserService{GDal: mockG, CDal: mockC}
-	return ctx, tagDTOService
-}
-
 func TestCreateUser(t *testing.T) {
-	ctx, mockC, mockDTO, userService := ConfigCreateUser(t)
+	ctx, mock, userService := ConfigUser(t)
 
 	type arg struct {
 		req *models.CreateUserReq
@@ -91,7 +44,7 @@ func TestCreateUser(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockC.EXPECT().CreateUser(
+				mock.EXPECT().CreateUser(
 					ctx,
 					gomock.Any(),
 				).Return(
@@ -103,25 +56,6 @@ func TestCreateUser(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOUser(
-					ctx,
-					&models.User{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-				).Return(
-					&models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-					nil,
-				).Do(func(ctx context.Context, user *models.User) {
-					fmt.Println("ConvertDBOToDTOUser called with", user)
-				})
 			},
 			wantResp: &models.CreateUserResp{
 				User: &models.UserDTO{
@@ -146,7 +80,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestGetUserById(t *testing.T) {
-	ctx, mockB, mockDTO, userService := ConfigGetUserById(t)
+	ctx, mock, userService := ConfigUser(t)
 
 	type arg struct {
 		req *models.GetUserByIdReq
@@ -169,7 +103,7 @@ func TestGetUserById(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockB.EXPECT().GetUserById(
+				mock.EXPECT().GetUserById(
 					ctx,
 					"test_user_id",
 				).Return(
@@ -181,20 +115,6 @@ func TestGetUserById(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOUser(
-					ctx,
-					gomock.Any(),
-				).Return(
-					&models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-					nil,
-				).Do(func(ctx context.Context, user *models.User) {
-					fmt.Println("ConvertDBOToDTOUser called with", user)
-				})
 			},
 			wantResp: &models.GetUserByIdResp{
 				User: &models.UserDTO{
@@ -219,7 +139,7 @@ func TestGetUserById(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
-	ctx, mockG, mockDTO, userService := ConfigGetUser(t)
+	ctx, mock, userService := ConfigUser(t)
 
 	type arg struct {
 		req *models.GetUserReq
@@ -241,7 +161,7 @@ func TestGetUser(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockG.EXPECT().GetUser(
+				mock.EXPECT().GetUser(
 					ctx,
 				).Return(
 					[]*models.User{
@@ -254,25 +174,6 @@ func TestGetUser(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOUser(
-					ctx,
-					&models.User{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-				).Return(
-					&models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-					nil,
-				).Do(func(ctx context.Context, user *models.User) {
-					fmt.Println("ConvertDBOToDTOUser called with", user)
-				})
 			},
 			wantResp: &models.GetUserResp{
 				Users: []*models.UserDTO{
@@ -299,7 +200,7 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	ctx, mockU, mockDTO, userService := ConfigUpdateUser(t)
+	ctx, mock, userService := ConfigUser(t)
 
 	type arg struct {
 		req *models.UpdateUserReq
@@ -324,7 +225,7 @@ func TestUpdateUser(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockU.EXPECT().UpdateUser(
+				mock.EXPECT().UpdateUser(
 					ctx,
 					gomock.Any(),
 				).Return(
@@ -336,25 +237,6 @@ func TestUpdateUser(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOUser(
-					ctx,
-					&models.User{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-				).Return(
-					&models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-					nil,
-				).Do(func(ctx context.Context, user *models.User) {
-					fmt.Println("ConvertDBOToDTOUser called with", user)
-				})
 			},
 			wantResp: &models.UpdateUserResp{
 				User: &models.UserDTO{
@@ -379,7 +261,7 @@ func TestUpdateUser(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	ctx, mockD, mockDTO, userService := ConfigDeleteUser(t)
+	ctx, mock, userService := ConfigUser(t)
 
 	type arg struct {
 		req *models.DeleteUserReq
@@ -402,7 +284,7 @@ func TestDeleteUser(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockD.EXPECT().DeleteUser(
+				mock.EXPECT().DeleteUser(
 					ctx,
 					"test_user_id",
 				).Return(
@@ -414,25 +296,6 @@ func TestDeleteUser(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOUser(
-					ctx,
-					&models.User{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-				).Return(
-					&models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-					nil,
-				).Do(func(ctx context.Context, user *models.User) {
-					fmt.Println("ConvertDBOToDTOUser called with", user)
-				})
 			},
 			wantResp: &models.DeleteUserResp{
 				User: &models.UserDTO{
@@ -457,8 +320,8 @@ func TestDeleteUser(t *testing.T) {
 }
 
 func TestConvertDBOToDTOUser(t *testing.T) {
-	ctx, userService := ConfigUserDTOService(t)
-
+	ctx:= context.Background()
+	userService:= &service.UserService{}
 	type arg struct {
 		user *models.User
 		ctx context.Context

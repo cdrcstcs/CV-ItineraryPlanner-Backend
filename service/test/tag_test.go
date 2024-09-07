@@ -3,70 +3,23 @@ package test
 import (
 	"context"
 	"testing"
-	"fmt"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
 	"itineraryplanner/dal/mock"
 	"itineraryplanner/models"
 	"itineraryplanner/service"
-	ser_mock "itineraryplanner/service/mock"
 )
 
-func ConfigCreateTag(t *testing.T) (context.Context, *mock.MockCreateTagDal, *ser_mock.MockTagDTOService, *service.TagService) {
+func ConfigTag(t *testing.T) (context.Context, *mock.MockTagDal, *service.TagService) {
 	ctrl := gomock.NewController(t)
 	ctx := context.Background()
-	mockC := mock.NewMockCreateTagDal(ctrl)
-	mockDTO := ser_mock.NewMockTagDTOService(ctrl)
-	tagService := &service.TagService{CDal: mockC}
-	return ctx, mockC, mockDTO, tagService
+	mock := mock.NewMockTagDal(ctrl)
+	tagService := &service.TagService{Dal: mock}
+	return ctx, mock, tagService
 }
-
-func ConfigGetTag(t *testing.T) (context.Context, *mock.MockGetTagDal, *ser_mock.MockTagDTOService, *service.TagService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockG := mock.NewMockGetTagDal(ctrl)
-	mockDTO := ser_mock.NewMockTagDTOService(ctrl)
-	tagService := &service.TagService{GDal: mockG}
-	return ctx, mockG, mockDTO, tagService
-}
-
-func ConfigGetTagById(t *testing.T) (context.Context, *mock.MockGetTagByIdDal, *ser_mock.MockTagDTOService, *service.TagService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockB := mock.NewMockGetTagByIdDal(ctrl)
-	mockDTO := ser_mock.NewMockTagDTOService(ctrl)
-	tagService := &service.TagService{BDal: mockB}
-	return ctx, mockB, mockDTO, tagService
-}
-func ConfigUpdateTag(t *testing.T) (context.Context, *mock.MockUpdateTagDal, *ser_mock.MockTagDTOService, *service.TagService){
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockU := mock.NewMockUpdateTagDal(ctrl)
-	mockDTO := ser_mock.NewMockTagDTOService(ctrl)
-	tagService := &service.TagService{UDal: mockU}
-	return ctx, mockU, mockDTO, tagService
-}
-func ConfigDeleteTag(t *testing.T) (context.Context, *mock.MockDeleteTagDal, *ser_mock.MockTagDTOService, *service.TagService){
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockD := mock.NewMockDeleteTagDal(ctrl)
-	mockDTO := ser_mock.NewMockTagDTOService(ctrl)
-	tagService := &service.TagService{DDal: mockD}
-	return ctx, mockD, mockDTO, tagService
-}
-func ConfigTagDTOService(t *testing.T) (context.Context, *service.TagService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockC := mock.NewMockCreateTagDal(ctrl)
-	mockG := mock.NewMockGetTagDal(ctrl)
-	tagDTOService := &service.TagService{GDal: mockG, CDal: mockC}
-	return ctx, tagDTOService
-}
-
-
 func TestCreateTag(t *testing.T) {
-	ctx, mockC, mockDTO, tagService := ConfigCreateTag(t)
+	ctx, mock, tagService := ConfigTag(t)
 
 	type arg struct {
 		req *models.CreateTagReq
@@ -89,7 +42,7 @@ func TestCreateTag(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockC.EXPECT().CreateTag(
+				mock.EXPECT().CreateTag(
 					ctx,
 					gomock.Any(),
 				).Return(
@@ -99,21 +52,6 @@ func TestCreateTag(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOTag(
-					ctx,
-					&models.Tag{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-				).Return(
-					&models.TagDTO{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-					nil,
-				).Do(func(ctx context.Context, tag *models.Tag) {
-					fmt.Println("ConvertDBOToDTOTag called with", tag)
-				})
 			},
 			wantResp: &models.CreateTagResp{
 				Tag: &models.TagDTO{
@@ -137,7 +75,7 @@ func TestCreateTag(t *testing.T) {
 }
 
 func TestGetTagById(t *testing.T) {
-	ctx, mockB, mockDTO, tagService := ConfigGetTagById(t)
+	ctx, mock, tagService := ConfigTag(t)
 
 	type arg struct {
 		req *models.GetTagByIdReq
@@ -160,7 +98,7 @@ func TestGetTagById(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockB.EXPECT().GetTagById(
+				mock.EXPECT().GetTagById(
 					ctx,
 					gomock.Any(),
 				).Return(
@@ -170,18 +108,6 @@ func TestGetTagById(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOTag(
-					ctx,
-					gomock.Any(),
-				).Return(
-					&models.TagDTO{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-					nil,
-				).Do(func(ctx context.Context, tag *models.Tag) {
-					fmt.Println("ConvertDBOToDTOTag called with", tag)
-				})
 			},
 			wantResp: &models.GetTagByIdResp{
 				Tag: &models.TagDTO{
@@ -205,7 +131,7 @@ func TestGetTagById(t *testing.T) {
 }
 
 func TestGetTag(t *testing.T) {
-	ctx, mockG, mockDTO, tagService := ConfigGetTag(t)
+	ctx, mock, tagService := ConfigTag(t)
 
 	type arg struct {
 		req *models.GetTagReq
@@ -227,7 +153,7 @@ func TestGetTag(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockG.EXPECT().GetTag(
+				mock.EXPECT().GetTag(
 					ctx,
 				).Return(
 					[]*models.Tag{
@@ -238,21 +164,6 @@ func TestGetTag(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOTag(
-					ctx,
-					&models.Tag{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-				).Return(
-					&models.TagDTO{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-					nil,
-				).Do(func(ctx context.Context, tag *models.Tag) {
-					fmt.Println("ConvertDBOToDTOTag called with", tag)
-				})
 			},
 			wantResp: &models.GetTagResp{
 				Tags: []*models.TagDTO{
@@ -278,7 +189,7 @@ func TestGetTag(t *testing.T) {
 }
 
 func TestUpdateTag(t *testing.T) {
-	ctx, mockU, mockDTO, tagService := ConfigUpdateTag(t)
+	ctx, mock, tagService := ConfigTag(t)
 
 	type arg struct {
 		req *models.UpdateTagReq
@@ -301,7 +212,7 @@ func TestUpdateTag(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockU.EXPECT().UpdateTag(
+				mock.EXPECT().UpdateTag(
 					ctx,
 					gomock.Any(),
 				).Return(
@@ -311,21 +222,6 @@ func TestUpdateTag(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOTag(
-					ctx,
-					&models.Tag{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-				).Return(
-					&models.TagDTO{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-					nil,
-				).Do(func(ctx context.Context, tag *models.Tag) {
-					fmt.Println("ConvertDBOToDTOTag called with", tag)
-				})
 			},
 			wantResp: &models.UpdateTagResp{
 				Tag: &models.TagDTO{
@@ -349,7 +245,7 @@ func TestUpdateTag(t *testing.T) {
 }
 
 func TestDeleteTag(t *testing.T) {
-	ctx, mockD, mockDTO, tagService := ConfigDeleteTag(t)
+	ctx, mock, tagService := ConfigTag(t)
 
 	type arg struct {
 		req *models.DeleteTagReq
@@ -372,7 +268,7 @@ func TestDeleteTag(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockD.EXPECT().DeleteTag(
+				mock.EXPECT().DeleteTag(
 					ctx,
 					gomock.Any(),
 				).Return(
@@ -382,21 +278,6 @@ func TestDeleteTag(t *testing.T) {
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOTag(
-					ctx,
-					&models.Tag{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-				).Return(
-					&models.TagDTO{
-						Id:    "test_tag_id",
-						Value: "test_value",
-					},
-					nil,
-				).Do(func(ctx context.Context, tag *models.Tag) {
-					fmt.Println("ConvertDBOToDTOTag called with", tag)
-				})
 			},
 			wantResp: &models.DeleteTagResp{
 				Tag: &models.TagDTO{
@@ -419,8 +300,8 @@ func TestDeleteTag(t *testing.T) {
 	}
 }
 func TestConvertDBOToDTOTag(t *testing.T) {
-	ctx, tagService := ConfigTagDTOService(t)
-
+	ctx:= context.Background()
+	tagService:= &service.TagService{}
 	type arg struct {
 		tag *models.Tag
 		ctx context.Context

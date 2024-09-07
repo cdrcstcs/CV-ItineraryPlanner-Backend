@@ -13,92 +13,92 @@ import (
 
 
 
-func NewMainCreateItineraryController(ac con_inf.CreateItineraryController) inf.MainCreateItineraryController {
+func NewMainItineraryController(c con_inf.ItineraryController) inf.MainItineraryController {
 	return &MainItineraryController{
-		CCon: ac,
-	}
-}
-func NewMainGetItineraryController(ac con_inf.GetItineraryController) inf.MainGetItineraryController {
-	return &MainItineraryController{
-		GCon: ac,
-	}
-}
-func NewMainGetItineraryByIdController(ac con_inf.GetItineraryByIdController) inf.MainGetItineraryByIdController {
-	return &MainItineraryController{
-		BCon: ac,
-	}
-}
-func NewMainUpdateItineraryController(ac con_inf.UpdateItineraryController) inf.MainUpdateItineraryController {
-	return &MainItineraryController{
-		UCon: ac,
-	}
-}
-func NewMainDeleteItineraryController(ac con_inf.DeleteItineraryController) inf.MainDeleteItineraryController {
-	return &MainItineraryController{
-		DCon: ac,
+		Con: c,
 	}
 }
 
 type MainItineraryController struct {
-	CCon con_inf.CreateItineraryController
-	BCon con_inf.GetItineraryByIdController
-	GCon con_inf.GetItineraryController
-	UCon con_inf.UpdateItineraryController
-	DCon con_inf.DeleteItineraryController
+	Con con_inf.ItineraryController
 }
 
 func (m *MainItineraryController) CreateItinerary(c *gin.Context) {
-	ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.CreateItineraryReq](c, models.CreateItineraryReq{})
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
-		return
-	}
-	resp, err := m.CCon.CreateItinerary(ctx, &req)
-	// we usually just use ok status for client
-	c.JSON(http.StatusOK, resp)
+    ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.CreateItineraryReq](c, models.CreateItineraryReq{})
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
+        return
+    }
+    
+    resp, err := m.Con.CreateItinerary(ctx, &req)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error creating Itinerary: %s", err.Error())})
+        return
+    }
+
+    c.JSON(http.StatusOK, resp)
 }
 
 func (m *MainItineraryController) GetItinerary(c *gin.Context) {
-	ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.GetItineraryReq](c, models.GetItineraryReq{})
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
-		return
-	}
-	resp, err := m.GCon.GetItinerary(ctx, &req)
-	// we usually just use ok status for client
-	c.JSON(http.StatusOK, resp)
+    ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.GetItineraryReq](c, models.GetItineraryReq{})
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
+        return
+    }
+    
+    resp, err := m.Con.GetItinerary(ctx, &req)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error getting Itinerary: %s", err.Error())})
+        return
+    }
+
+    c.JSON(http.StatusOK, resp)
 }
 
 func (m *MainItineraryController) GetItineraryById(c *gin.Context) {
-	ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.GetItineraryByIdReq](c, models.GetItineraryByIdReq{})
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
-		return
-	}
-	resp, err := m.BCon.GetItineraryById(ctx, &req)
-	// we usually just use ok status for client
-	c.JSON(http.StatusOK, resp)
+    ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.GetItineraryByIdReq](c, models.GetItineraryByIdReq{})
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
+        return
+    }
+    
+    resp, err := m.Con.GetItineraryById(ctx, &req)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error getting Itinerary by ID: %s", err.Error())})
+        return
+    }
+
+    c.JSON(http.StatusOK, resp)
 }
 
 func (m *MainItineraryController) UpdateItinerary(c *gin.Context) {
-	ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.UpdateItineraryReq](c, models.UpdateItineraryReq{})
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
-		return
-	}
-	resp, err := m.UCon.UpdateItinerary(ctx, &req)
-	// we usually just use ok status for client
-	c.JSON(http.StatusOK, resp)
+    ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.UpdateItineraryReq](c, models.UpdateItineraryReq{})
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
+        return
+    }
+    
+    resp, err := m.Con.UpdateItinerary(ctx, &req)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error updating Itinerary: %s", err.Error())})
+        return
+    }
+
+    c.JSON(http.StatusOK, resp)
 }
 
 func (m *MainItineraryController) DeleteItinerary(c *gin.Context) {
-	ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.DeleteItineraryReq](c, models.DeleteItineraryReq{})
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
-		return
-	}
-	resp, err := m.DCon.DeleteItinerary(ctx, &req)
-	// we usually just use ok status for client
-	c.JSON(http.StatusOK, resp)
-}
+    ctx, req, err := gin_ctx.GetCtxAndReqFromGinCtx[models.DeleteItineraryReq](c, models.DeleteItineraryReq{})
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Error decoding request body: %s", err.Error())})
+        return
+    }
+    
+    resp, err := m.Con.DeleteItinerary(ctx, &req)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error deleting Itinerary: %s", err.Error())})
+        return
+    }
 
+    c.JSON(http.StatusOK, resp)
+}

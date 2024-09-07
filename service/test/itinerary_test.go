@@ -13,65 +13,17 @@ import (
 	"itineraryplanner/dal/mock"
 	"itineraryplanner/models"
 	"itineraryplanner/service"
-	ser_mock "itineraryplanner/service/mock"
 )
 
-func ConfigCreateItinerary(t *testing.T) (context.Context, *mock.MockCreateItineraryDal, *ser_mock.MockItineraryDTOService, *service.ItineraryService) {
+func ConfigItinerary(t *testing.T) (context.Context, *mock.MockItineraryDal, *service.ItineraryService) {
 	ctrl := gomock.NewController(t)
 	ctx := context.Background()
-	mockC := mock.NewMockCreateItineraryDal(ctrl)
-	mockDTO := ser_mock.NewMockItineraryDTOService(ctrl)
-	itineraryService := &service.ItineraryService{CDal: mockC}
-	return ctx, mockC, mockDTO, itineraryService
+	mock := mock.NewMockItineraryDal(ctrl)
+	itineraryService := &service.ItineraryService{Dal: mock}
+	return ctx, mock, itineraryService
 }
-
-func ConfigGetItinerary(t *testing.T) (context.Context, *mock.MockGetItineraryDal, *ser_mock.MockItineraryDTOService, *service.ItineraryService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockG := mock.NewMockGetItineraryDal(ctrl)
-	mockDTO := ser_mock.NewMockItineraryDTOService(ctrl)
-	itineraryService := &service.ItineraryService{GDal: mockG}
-	return ctx, mockG, mockDTO, itineraryService
-}
-
-func ConfigGetItineraryById(t *testing.T) (context.Context, *mock.MockGetItineraryByIdDal, *ser_mock.MockItineraryDTOService, *service.ItineraryService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockB := mock.NewMockGetItineraryByIdDal(ctrl)
-	mockDTO := ser_mock.NewMockItineraryDTOService(ctrl)
-	itineraryService := &service.ItineraryService{BDal: mockB}
-	return ctx, mockB, mockDTO, itineraryService
-}
-
-func ConfigUpdateItinerary(t *testing.T) (context.Context, *mock.MockUpdateItineraryDal, *ser_mock.MockItineraryDTOService, *service.ItineraryService){
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockU := mock.NewMockUpdateItineraryDal(ctrl)
-	mockDTO := ser_mock.NewMockItineraryDTOService(ctrl)
-	itineraryService := &service.ItineraryService{UDal: mockU}
-	return ctx, mockU, mockDTO, itineraryService
-}
-func ConfigDeleteItinerary(t *testing.T) (context.Context, *mock.MockDeleteItineraryDal, *ser_mock.MockItineraryDTOService, *service.ItineraryService){
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockD := mock.NewMockDeleteItineraryDal(ctrl)
-	mockDTO := ser_mock.NewMockItineraryDTOService(ctrl)
-	itineraryService := &service.ItineraryService{DDal: mockD}
-	return ctx, mockD, mockDTO, itineraryService
-}
-
-func ConfigConvertToDTOItinerary(t *testing.T) (context.Context, *ser_mock.MockFacadeDesignPatternService, *service.ItineraryService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockC := mock.NewMockCreateItineraryDal(ctrl)
-	mockG := mock.NewMockGetItineraryDal(ctrl)
-	mockF := ser_mock.NewMockFacadeDesignPatternService(ctrl)
-	itineraryService := &service.ItineraryService{CDal: mockC, GDal: mockG}
-	return ctx, mockF, itineraryService
-}
-
 func TestCreateItinerary(t *testing.T) {
-	ctx, mockC, mockDTO, itineraryService := ConfigCreateItinerary(t)
+	ctx, mock, itineraryService := ConfigItinerary(t)
 
 	type arg struct {
 		req *models.CreateItineraryReq
@@ -90,133 +42,53 @@ func TestCreateItinerary(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				req: &models.CreateItineraryReq{
-					CopiedId:  "test_copied_id",
-					UserId:    "test_user_id",
-					StartTime: time.Now(),
-					EndTime:   time.Now().Add(time.Hour),
+					CopiedId:  "6641b48d61634ce13f96c3f7",
+					UserId:    "6641b48d61634ce13f96c3f7",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 					EventIds:  []string{
-						"event-id-1", 
-						"event-id-2",
+						"66420cf5a9df66a0a0737cb5",
 					},
-					RatingId:  "rating-id-1",
+					EventCount: 1,
+					RatingId:  "6642102153edf9e8fb3dfcda",
 				},
 			},
 			before: func(t *testing.T) {
-				mockC.EXPECT().CreateItinerary(
+				mock.EXPECT().CreateItinerary(
 					ctx,
 					gomock.Any(),
 				).Return(
 					&models.Itinerary{
-						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						UserId:    "test_user_id",
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
+						CopiedId:  "6641b48d61634ce13f96c3f7",
+						CopiedName: "test",
+						Name: "test",
+						UserId:    "6641b48d61634ce13f96c3f7",
+						StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+						EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 						EventIds:  []string{
-							"event-id-1",
-							"event-id-2",
+							"66420cf5a9df66a0a0737cb5",
 						},
-						RatingId:  "rating-id-1",
-					},
-					nil,
-				)
-				mockDTO.EXPECT().ConvertDBOToDTOItinerary(
-					ctx,
-					&models.Itinerary{
-						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						UserId:    "test_user_id",
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
-						EventIds:  []string{
-							"event-id-1",
-							"event-id-2",
-						},
-						RatingId:  "rating-id-1",
-					},
-				).Return(
-					&models.ItineraryDTO{
-						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						User:    &models.UserDTO{
-							Id:       "test_user_id",
-							Name:     "test_name",
-							Email:    "test_email@example.com",
-							Password: "test_password",
-						},
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
-						Events:    []*models.EventDTO{
-							{
-								Id:            "event-id-1",
-								ItineraryId: "test_itinerary_id",
-								StartTime:     time.Now(),
-								EndTime:       time.Now().Add(time.Hour),
-								Attraction:    &models.AttractionDTO{},
-								Description:   "test_description",
-							},
-							{
-								Id:            "event-id-2",
-								ItineraryId: "test_itinerary_id",
-								StartTime:     time.Now(),
-								EndTime:       time.Now().Add(time.Hour),
-								Attraction:    &models.AttractionDTO{},
-								Description:   "test_description",
-							},
-						},
-						Rating:    &models.RatingDTO{
-							Id:   "test_rating_id",
-							Type: "ATTRACTION",
-							User: &models.UserDTO{
-								Id: "test_user_id", 
-								Name: "test_user_name",
-							},
-							ObjectId: "test_attraction_id",
-							Score: 5,
-						},
+						EventCount: 1,
+						RatingId:  "6642102153edf9e8fb3dfcda",
 					},
 					nil,
 				)
 			},
 			wantResp: &models.CreateItineraryResp{
 				Itinerary: &models.ItineraryDTO{
-					Id:        "test_itinerary_id",
-					CopiedId:  "test_copied_id",
-					User:    &models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
+					CopiedId:  "6641b48d61634ce13f96c3f7",
+					CopiedName: "test",
+					Name: "test",
+					UserId:    "6641b48d61634ce13f96c3f7",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+					EventIds:  []string{
+						"66420cf5a9df66a0a0737cb5",
 					},
-					StartTime: time.Now(),
-					EndTime:   time.Now().Add(time.Hour),
-					Events:    []*models.EventDTO{
-						{
-							Id:            "event-id-1",
-							ItineraryId: "test_itinerary_id",
-							StartTime:     time.Now(),
-							EndTime:       time.Now().Add(time.Hour),
-							Attraction:    &models.AttractionDTO{},
-							Description:   "test_description",
-						},
-						{
-							Id:            "event-id-2",
-							ItineraryId: "test_itinerary_id",
-							StartTime:     time.Now(),
-							EndTime:       time.Now().Add(time.Hour),
-							Attraction:    &models.AttractionDTO{},
-							Description:   "test_description",
-						},
-					},
-					Rating:    &models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
+					EventCount:1,
+					Rating:  &models.RatingDTO{
+						Id:"6642102153edf9e8fb3dfcda",
+						Score:5,
 					},
 				},
 			},
@@ -235,7 +107,7 @@ func TestCreateItinerary(t *testing.T) {
 }
 
 func TestGetItineraryById(t *testing.T) {
-	ctx, mockB, mockDTO, itineraryService := ConfigGetItineraryById(t)
+	ctx, mock, itineraryService := ConfigItinerary(t)
 
 	type arg struct {
 		req *models.GetItineraryByIdReq
@@ -258,115 +130,44 @@ func TestGetItineraryById(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockB.EXPECT().GetItineraryById(
+				mock.EXPECT().GetItineraryById(
 					ctx,
 					gomock.Any(),
 				).Return(
 					&models.Itinerary{
-						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						UserId:    "test_user_id",
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
+						CopiedId:  "6641b48d61634ce13f96c3f7",
+						CopiedName: "test",
+						Name: "test",
+						UserId:    "6641b48d61634ce13f96c3f7",
+						StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+						EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 						EventIds:  []string{
-							"event-id-1",
-							"event-id-2",
+							"66420cf5a9df66a0a0737cb5",
 						},
-						RatingId:  "rating-id-1",
+						EventCount: 1,
+						RatingId:  "6642102153edf9e8fb3dfcda",
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOItinerary(
-					ctx,
-					gomock.Any()).Return(
-						&models.ItineraryDTO{
-							Id:        "test_itinerary_id",
-							CopiedId:  "test_copied_id",
-							User:    &models.UserDTO{
-								Id:       "test_user_id",
-								Name:     "test_name",
-								Email:    "test_email@example.com",
-								Password: "test_password",
-							},
-							StartTime: time.Now(),
-							EndTime:   time.Now().Add(time.Hour),
-							Events:    []*models.EventDTO{
-								{
-									Id:            "event-id-1",
-									ItineraryId: "test_itinerary_id",
-									StartTime:     time.Now(),
-									EndTime:       time.Now().Add(time.Hour),
-									Attraction:    &models.AttractionDTO{},
-									Description:   "test_description",
-								},
-								{
-									Id:            "event-id-2",
-									ItineraryId: "test_itinerary_id",
-									StartTime:     time.Now(),
-									EndTime:       time.Now().Add(time.Hour),
-									Attraction:    &models.AttractionDTO{},
-									Description:   "test_description",
-								},
-							},
-							Rating:    &models.RatingDTO{
-								Id:   "test_rating_id",
-								Type: "ATTRACTION",
-								User: &models.UserDTO{
-									Id: "test_user_id", 
-									Name: "test_user_name",
-								},
-								ObjectId: "test_attraction_id",
-								Score: 5,
-							},
-						},
-					nil)
 			},
 			wantResp: &models.GetItineraryByIdResp{
 				Itinerary: &models.ItineraryDTO{
 					Id:        "test_itinerary_id",
-					CopiedId:  "test_copied_id",
-					User:    &models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-					StartTime: time.Now(),
-					EndTime:   time.Now().Add(time.Hour),
-					Events:    []*models.EventDTO{
-						{
-							Id:            "event-id-1",
-							ItineraryId: "test_itinerary_id",
-							StartTime:     time.Now(),
-							EndTime:       time.Now().Add(time.Hour),
-							Attraction:    &models.AttractionDTO{},
-							Description:   "test_description",
-						},
-						{
-							Id:            "event-id-2",
-							ItineraryId: "test_itinerary_id",
-							StartTime:     time.Now(),
-							EndTime:       time.Now().Add(time.Hour),
-							Attraction:    &models.AttractionDTO{},
-							Description:   "test_description",
-						},
-					},
-					Rating:    &models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
-					},
+					CopiedId:  "6641b48d61634ce13f96c3f7",
+					CopiedName: "test",
+					Name: "test",
+					UserId:    "6641b48d61634ce13f96c3f7",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+					EventIds:     []string{"66420cf5a9df66a0a0737cb5"},
+					EventCount:   1,
+					Rating:       &models.RatingDTO{Id: "6642102153edf9e8fb3dfcda", Score: 5},
 				},
 			},
 			wantErr: nil,
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.before(t)
@@ -379,7 +180,7 @@ func TestGetItineraryById(t *testing.T) {
 }
 
 func TestGetItinerary(t *testing.T) {
-	ctx, mockG, mockDTO, itineraryService := ConfigGetItinerary(t)
+	ctx, mock, itineraryService := ConfigItinerary(t)
 
 	type arg struct {
 		req *models.GetItineraryReq
@@ -401,109 +202,39 @@ func TestGetItinerary(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockG.EXPECT().GetItinerary(ctx).Return(
+				mock.EXPECT().GetItinerary(ctx).Return(
 					[]*models.Itinerary{
 						{
 							Id:        "test_itinerary_id",
-							CopiedId:  "test_copied_id",
-							UserId:    "test_user_id",
-							StartTime: time.Now(),
-							EndTime:   time.Now().Add(time.Hour),
+							CopiedId:  "6641b48d61634ce13f96c3f7",
+							CopiedName: "test",
+							Name: "test",
+							UserId:    "6641b48d61634ce13f96c3f7",
+							StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+							EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 							EventIds:  []string{
-								"event-id-1",
-								"event-id-2",
+								"66420cf5a9df66a0a0737cb5",
 							},
-							RatingId:  "rating-id-1",
+							EventCount: 1,
+							RatingId:  "6642102153edf9e8fb3dfcda",
 						},
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOItinerary(
-					ctx,
-					gomock.Any()).Return(
-						&models.ItineraryDTO{
-							Id:        "test_itinerary_id",
-							CopiedId:  "test_copied_id",
-							User:    &models.UserDTO{
-								Id:       "test_user_id",
-								Name:     "test_name",
-								Email:    "test_email@example.com",
-								Password: "test_password",
-							},
-							StartTime: time.Now(),
-							EndTime:   time.Now().Add(time.Hour),
-							Events:    []*models.EventDTO{
-								{
-									Id:            "event-id-1",
-									ItineraryId: "test_itinerary_id",
-									StartTime:     time.Now(),
-									EndTime:       time.Now().Add(time.Hour),
-									Attraction:    &models.AttractionDTO{},
-									Description:   "test_description",
-								},
-								{
-									Id:            "event-id-2",
-									ItineraryId: "test_itinerary_id",
-									StartTime:     time.Now(),
-									EndTime:       time.Now().Add(time.Hour),
-									Attraction:    &models.AttractionDTO{},
-									Description:   "test_description",
-								},
-							},
-							Rating:    &models.RatingDTO{
-								Id:   "test_rating_id",
-								Type: "ATTRACTION",
-								User: &models.UserDTO{
-									Id: "test_user_id", 
-									Name: "test_user_name",
-								},
-								ObjectId: "test_attraction_id",
-								Score: 5,
-							},
-						},
-					nil)
-			},
+			},	
 			wantResp: &models.GetItineraryResp{
 				Itineraries: []*models.ItineraryDTO{
 					{
 						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						User:    &models.UserDTO{
-							Id:       "test_user_id",
-							Name:     "test_name",
-							Email:    "test_email@example.com",
-							Password: "test_password",
-						},
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
-						Events:    []*models.EventDTO{
-							{
-								Id:            "event-id-1",
-								ItineraryId: "test_itinerary_id",
-								StartTime:     time.Now(),
-								EndTime:       time.Now().Add(time.Hour),
-								Attraction:    &models.AttractionDTO{},
-								Description:   "test_description",
-							},
-							{
-								Id:            "event-id-2",
-								ItineraryId: "test_itinerary_id",
-								StartTime:     time.Now(),
-								EndTime:       time.Now().Add(time.Hour),
-								Attraction:    &models.AttractionDTO{},
-								Description:   "test_description",
-							},
-						},
-						Rating:    &models.RatingDTO{
-							Id:   "test_rating_id",
-							Type: "ATTRACTION",
-							User: &models.UserDTO{
-								Id: "test_user_id", 
-								Name: "test_user_name",
-							},
-							ObjectId: "test_attraction_id",
-							Score: 5,
-						},
+						CopiedId:  "6641b48d61634ce13f96c3f7",
+						CopiedName: "test",
+						Name: "test",
+						UserId:    "6641b48d61634ce13f96c3f7",
+						StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+						EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+						EventIds:     []string{"66420cf5a9df66a0a0737cb5"},
+						EventCount:   1,
+						Rating:       &models.RatingDTO{Id: "6642102153edf9e8fb3dfcda", Score: 5},
 					},
 				},
 			},
@@ -523,7 +254,7 @@ func TestGetItinerary(t *testing.T) {
 }
 
 func TestUpdateItinerary(t *testing.T) {
-	ctx, mockU, mockDTO, itineraryService := ConfigUpdateItinerary(t)
+	ctx, mockU, itineraryService := ConfigItinerary(t)
 
 	type arg struct {
 		req *models.UpdateItineraryReq
@@ -543,15 +274,17 @@ func TestUpdateItinerary(t *testing.T) {
 				ctx: ctx,
 				req: &models.UpdateItineraryReq{
 					Id:        "test_itinerary_id",
-					CopiedId:  "test_copied_id",
-					UserId:    "test_user_id",
-					StartTime: time.Now(),
-					EndTime:   time.Now().Add(time.Hour),
+					CopiedId:  "6641b48d61634ce13f96c3f7",
+					CopiedName: "test1",
+					Name: "test1",
+					UserId:    "6641b48d61634ce13f96c3f7",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 					EventIds:  []string{
-						"event-id-1", 
-						"event-id-2",
+						"66420cf5a9df66a0a0737cb5",
 					},
-					RatingId:  "rating-id-1",
+					EventCount: 1,
+					RatingId:  "6642102153edf9e8fb3dfcda",
 				},
 			},
 			before: func(t *testing.T) {
@@ -561,72 +294,17 @@ func TestUpdateItinerary(t *testing.T) {
 				).Return(
 					&models.Itinerary{
 						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						UserId:    "test_user_id",
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
+						CopiedId:  "6641b48d61634ce13f96c3f7",
+						CopiedName: "test1",
+						Name: "test1",
+						UserId:    "6641b48d61634ce13f96c3f7",
+						StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+						EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 						EventIds:  []string{
-							"event-id-1",
-							"event-id-2",
+							"66420cf5a9df66a0a0737cb5",
 						},
-						RatingId:  "rating-id-1",
-					},
-					nil,
-				)
-				mockDTO.EXPECT().ConvertDBOToDTOItinerary(
-					ctx,
-					&models.Itinerary{
-						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						UserId:    "test_user_id",
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
-						EventIds:  []string{
-							"event-id-1",
-							"event-id-2",
-						},
-						RatingId:  "rating-id-1",
-					},
-				).Return(
-					&models.ItineraryDTO{
-						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						User:    &models.UserDTO{
-							Id:       "test_user_id",
-							Name:     "test_name",
-							Email:    "test_email@example.com",
-							Password: "test_password",
-						},
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
-						Events:    []*models.EventDTO{
-							{
-								Id:            "event-id-1",
-								ItineraryId: "test_itinerary_id",
-								StartTime:     time.Now(),
-								EndTime:       time.Now().Add(time.Hour),
-								Attraction:    &models.AttractionDTO{},
-								Description:   "test_description",
-							},
-							{
-								Id:            "event-id-2",
-								ItineraryId: "test_itinerary_id",
-								StartTime:     time.Now(),
-								EndTime:       time.Now().Add(time.Hour),
-								Attraction:    &models.AttractionDTO{},
-								Description:   "test_description",
-							},
-						},
-						Rating:    &models.RatingDTO{
-							Id:   "test_rating_id",
-							Type: "ATTRACTION",
-							User: &models.UserDTO{
-								Id: "test_user_id", 
-								Name: "test_user_name",
-							},
-							ObjectId: "test_attraction_id",
-							Score: 5,
-						},
+						EventCount: 1,
+						RatingId:  "6642102153edf9e8fb3dfcda",
 					},
 					nil,
 				)
@@ -634,43 +312,15 @@ func TestUpdateItinerary(t *testing.T) {
 			wantResp: &models.UpdateItineraryResp{
 				Itinerary: &models.ItineraryDTO{
 					Id:        "test_itinerary_id",
-					CopiedId:  "test_copied_id",
-					User:    &models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-					StartTime: time.Now(),
-					EndTime:   time.Now().Add(time.Hour),
-					Events:    []*models.EventDTO{
-						{
-							Id:            "event-id-1",
-							ItineraryId: "test_itinerary_id",
-							StartTime:     time.Now(),
-							EndTime:       time.Now().Add(time.Hour),
-							Attraction:    &models.AttractionDTO{},
-							Description:   "test_description",
-						},
-						{
-							Id:            "event-id-2",
-							ItineraryId: "test_itinerary_id",
-							StartTime:     time.Now(),
-							EndTime:       time.Now().Add(time.Hour),
-							Attraction:    &models.AttractionDTO{},
-							Description:   "test_description",
-						},
-					},
-					Rating:    &models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
-					},
+					CopiedId:  "6641b48d61634ce13f96c3f7",
+					CopiedName: "test",
+					Name: "test",
+					UserId:    "6641b48d61634ce13f96c3f7",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+					EventIds:     []string{"66420cf5a9df66a0a0737cb5"},
+					EventCount:   1,
+					Rating:       &models.RatingDTO{Id: "6642102153edf9e8fb3dfcda", Score: 5},
 				},
 			},
 			wantErr: nil,
@@ -688,7 +338,7 @@ func TestUpdateItinerary(t *testing.T) {
 }
 
 func TestDeleteItinerary(t *testing.T) {
-	ctx, mockD, mockDTO, itineraryService := ConfigDeleteItinerary(t)
+	ctx, mock, itineraryService := ConfigItinerary(t)
 
 	type arg struct {
 		req *models.DeleteItineraryReq
@@ -711,120 +361,39 @@ func TestDeleteItinerary(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockD.EXPECT().DeleteItinerary(
+				mock.EXPECT().DeleteItinerary(
 					ctx,
 					gomock.Any(),
 				).Return(
 					&models.Itinerary{
-						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						UserId:    "test_user_id",
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
+						Id: "test_itinerary_id",
+						CopiedId:  "6641b48d61634ce13f96c3f7",
+						CopiedName: "test1",
+						Name: "test1",
+						UserId:    "6641b48d61634ce13f96c3f7",
+						StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+						EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 						EventIds:  []string{
-							"event-id-1",
-							"event-id-2",
+							"66420cf5a9df66a0a0737cb5",
 						},
-						RatingId:  "rating-id-1",
+						EventCount: 1,
+						RatingId:  "6642102153edf9e8fb3dfcda",
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTOItinerary(
-					ctx,
-					&models.Itinerary{
-						Id:        "test_itinerary_id",
-						CopiedId:  "test_copied_id",
-						UserId:    "test_user_id",
-						StartTime: time.Now(),
-						EndTime:   time.Now().Add(time.Hour),
-						EventIds:  []string{
-							"event-id-1",
-							"event-id-2",
-						},
-						RatingId:  "rating-id-1",
-					}).Return(
-						&models.ItineraryDTO{
-							Id:        "test_itinerary_id",
-							CopiedId:  "test_copied_id",
-							User:    &models.UserDTO{
-								Id:       "test_user_id",
-								Name:     "test_name",
-								Email:    "test_email@example.com",
-								Password: "test_password",
-							},
-							StartTime: time.Now(),
-							EndTime:   time.Now().Add(time.Hour),
-							Events:    []*models.EventDTO{
-								{
-									Id:            "event-id-1",
-									ItineraryId: "test_itinerary_id",
-									StartTime:     time.Now(),
-									EndTime:       time.Now().Add(time.Hour),
-									Attraction:    &models.AttractionDTO{},
-									Description:   "test_description",
-								},
-								{
-									Id:            "event-id-2",
-									ItineraryId: "test_itinerary_id",
-									StartTime:     time.Now(),
-									EndTime:       time.Now().Add(time.Hour),
-									Attraction:    &models.AttractionDTO{},
-									Description:   "test_description",
-								},
-							},
-							Rating:    &models.RatingDTO{
-								Id:   "test_rating_id",
-								Type: "ATTRACTION",
-								User: &models.UserDTO{
-									Id: "test_user_id", 
-									Name: "test_user_name",
-								},
-								ObjectId: "test_attraction_id",
-								Score: 5,
-							},
-						},
-					nil)
 			},
 			wantResp: &models.DeleteItineraryResp{
 				Itinerary: &models.ItineraryDTO{
 					Id:        "test_itinerary_id",
-					CopiedId:  "test_copied_id",
-					User:    &models.UserDTO{
-						Id:       "test_user_id",
-						Name:     "test_name",
-						Email:    "test_email@example.com",
-						Password: "test_password",
-					},
-					StartTime: time.Now(),
-					EndTime:   time.Now().Add(time.Hour),
-					Events:    []*models.EventDTO{
-						{
-							Id:            "event-id-1",
-							ItineraryId: "test_itinerary_id",
-							StartTime:     time.Now(),
-							EndTime:       time.Now().Add(time.Hour),
-							Attraction:    &models.AttractionDTO{},
-							Description:   "test_description",
-						},
-						{
-							Id:            "event-id-2",
-							ItineraryId: "test_itinerary_id",
-							StartTime:     time.Now(),
-							EndTime:       time.Now().Add(time.Hour),
-							Attraction:    &models.AttractionDTO{},
-							Description:   "test_description",
-						},
-					},
-					Rating:    &models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
-					},
+					CopiedId:  "6641b48d61634ce13f96c3f7",
+					CopiedName: "test",
+					Name: "test",
+					UserId:    "6641b48d61634ce13f96c3f7",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+					EventIds:     []string{"66420cf5a9df66a0a0737cb5"},
+					EventCount:   1,
+					Rating:       &models.RatingDTO{Id: "6642102153edf9e8fb3dfcda", Score: 5},
 				},
 			},
 			wantErr: nil,
@@ -842,8 +411,8 @@ func TestDeleteItinerary(t *testing.T) {
 	}
 }
 func TestConvertDBOToDTOItinerary(t *testing.T) {
-	ctx, mockF, itineraryService := ConfigConvertToDTOItinerary(t)
-
+	ctx:= context.Background()
+	itineraryService:= &service.ItineraryService{}
 	type arg struct {
 		req *models.Itinerary
 		ctx context.Context
@@ -860,86 +429,32 @@ func TestConvertDBOToDTOItinerary(t *testing.T) {
 			name: "success",
 			arg: arg{
 				req: &models.Itinerary{
-					Id:        "test_itinerary_id",
-					CopiedId:  "test_copied_id",
-					UserId:    "test_user_id",
-					StartTime: time.Now(),
-					EndTime:   time.Now().Add(time.Hour),
+					Id: "test_itinerary_id",
+					CopiedId:  "6641b48d61634ce13f96c3f7",
+					CopiedName: "test1",
+					Name: "test1",
+					UserId:    "6641b48d61634ce13f96c3f7",
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 					EventIds:  []string{
-						"event-id-1",
+						"66420cf5a9df66a0a0737cb5",
 					},
-					RatingId:  "rating-id-1",
+					EventCount: 1,
+					RatingId:  "6642102153edf9e8fb3dfcda",
 				},
 				ctx: ctx,
 			},
-			before: func(t *testing.T) {
-				mockF.EXPECT().Execute(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					&models.RespFacade{
-						GURB: &models.GetUserByIdResp{
-							User: &models.UserDTO{
-								Id:       "test_user_id",
-								Name:     "test_name",
-								Email:    "test_email@example.com",
-								Password: "test_password",
-							},
-						},
-						GERB: &models.GetEventByIdResp{
-							Event: &models.EventDTO{
-								Id:            "event-id-1",
-								ItineraryId: "test_itinerary_id",
-								StartTime:     time.Now(),
-								EndTime:       time.Now().Add(time.Hour),
-								Attraction:    &models.AttractionDTO{},
-								Description:   "test_description",
-							},
-						},
-						GRRB: &models.GetRatingByIdResp{
-							Rating: &models.RatingDTO{
-								Id:   "test_rating_id",
-								Type: "ATTRACTION",
-								User: &models.UserDTO{
-									Id: "test_user_id", 
-									Name: "test_user_name",
-								},
-								ObjectId: "test_attraction_id",
-								Score: 5,
-							},
-						},
-					},
-					nil,
-				)
-			},
 			wantResp: &models.ItineraryDTO{
 				Id:        "test_itinerary_id",
-				CopiedId:  "test_copied_id",
-				User:    &models.UserDTO{
-					Id:       "test_user_id",
-					Name:     "test_name",
-					Email:    "test_email@example.com",
-					Password: "test_password",
-				},
-				StartTime: time.Now(),
-				EndTime:   time.Now().Add(time.Hour),
-				Events:    []*models.EventDTO{
-					{
-						Id:            "event-id-1",
-						ItineraryId: "test_itinerary_id",
-						StartTime:     time.Now(),
-						EndTime:       time.Now().Add(time.Hour),
-						Attraction:    &models.AttractionDTO{},
-						Description:   "test_description",
-					},
-				},
-				Rating:    &models.RatingDTO{
-					Id:   "test_rating_id",
-					Type: "ATTRACTION",
-					User: &models.UserDTO{
-						Id: "test_user_id", 
-						Name: "test_user_name",
-					},
-					ObjectId: "test_attraction_id",
-					Score: 5,
-				},
+				CopiedId:  "6641b48d61634ce13f96c3f7",
+				CopiedName: "test",
+				Name: "test",
+				UserId:    "6641b48d61634ce13f96c3f7",
+				StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+				EventIds:     []string{"66420cf5a9df66a0a0737cb5"},
+				EventCount:   1,
+				Rating:       &models.RatingDTO{Id: "6642102153edf9e8fb3dfcda", Score: 5},
 			},
 			wantErr: nil,
 		},

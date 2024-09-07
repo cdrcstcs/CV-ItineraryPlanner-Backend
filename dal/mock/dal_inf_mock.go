@@ -10,33 +10,34 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	mongo "go.mongodb.org/mongo-driver/mongo"
 )
 
-// MockCreateAttractionDal is a mock of CreateAttractionDal interface.
-type MockCreateAttractionDal struct {
+// MockAttractionDal is a mock of AttractionDal interface.
+type MockAttractionDal struct {
 	ctrl     *gomock.Controller
-	recorder *MockCreateAttractionDalMockRecorder
+	recorder *MockAttractionDalMockRecorder
 }
 
-// MockCreateAttractionDalMockRecorder is the mock recorder for MockCreateAttractionDal.
-type MockCreateAttractionDalMockRecorder struct {
-	mock *MockCreateAttractionDal
+// MockAttractionDalMockRecorder is the mock recorder for MockAttractionDal.
+type MockAttractionDalMockRecorder struct {
+	mock *MockAttractionDal
 }
 
-// NewMockCreateAttractionDal creates a new mock instance.
-func NewMockCreateAttractionDal(ctrl *gomock.Controller) *MockCreateAttractionDal {
-	mock := &MockCreateAttractionDal{ctrl: ctrl}
-	mock.recorder = &MockCreateAttractionDalMockRecorder{mock}
+// NewMockAttractionDal creates a new mock instance.
+func NewMockAttractionDal(ctrl *gomock.Controller) *MockAttractionDal {
+	mock := &MockAttractionDal{ctrl: ctrl}
+	mock.recorder = &MockAttractionDalMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCreateAttractionDal) EXPECT() *MockCreateAttractionDalMockRecorder {
+func (m *MockAttractionDal) EXPECT() *MockAttractionDalMockRecorder {
 	return m.recorder
 }
 
 // CreateAttraction mocks base method.
-func (m *MockCreateAttractionDal) CreateAttraction(ctx context.Context, attraction *models.Attraction) (*models.Attraction, error) {
+func (m *MockAttractionDal) CreateAttraction(ctx context.Context, attraction *models.Attraction) (*models.Attraction, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAttraction", ctx, attraction)
 	ret0, _ := ret[0].(*models.Attraction)
@@ -45,150 +46,13 @@ func (m *MockCreateAttractionDal) CreateAttraction(ctx context.Context, attracti
 }
 
 // CreateAttraction indicates an expected call of CreateAttraction.
-func (mr *MockCreateAttractionDalMockRecorder) CreateAttraction(ctx, attraction interface{}) *gomock.Call {
+func (mr *MockAttractionDalMockRecorder) CreateAttraction(ctx, attraction interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAttraction", reflect.TypeOf((*MockCreateAttractionDal)(nil).CreateAttraction), ctx, attraction)
-}
-
-// MockGetAttractionByIdDal is a mock of GetAttractionByIdDal interface.
-type MockGetAttractionByIdDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetAttractionByIdDalMockRecorder
-}
-
-// MockGetAttractionByIdDalMockRecorder is the mock recorder for MockGetAttractionByIdDal.
-type MockGetAttractionByIdDalMockRecorder struct {
-	mock *MockGetAttractionByIdDal
-}
-
-// NewMockGetAttractionByIdDal creates a new mock instance.
-func NewMockGetAttractionByIdDal(ctrl *gomock.Controller) *MockGetAttractionByIdDal {
-	mock := &MockGetAttractionByIdDal{ctrl: ctrl}
-	mock.recorder = &MockGetAttractionByIdDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetAttractionByIdDal) EXPECT() *MockGetAttractionByIdDalMockRecorder {
-	return m.recorder
-}
-
-// GetAttractionById mocks base method.
-func (m *MockGetAttractionByIdDal) GetAttractionById(ctx context.Context, attractionId string) (*models.Attraction, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAttractionById", ctx, attractionId)
-	ret0, _ := ret[0].(*models.Attraction)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAttractionById indicates an expected call of GetAttractionById.
-func (mr *MockGetAttractionByIdDalMockRecorder) GetAttractionById(ctx, attractionId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAttractionById", reflect.TypeOf((*MockGetAttractionByIdDal)(nil).GetAttractionById), ctx, attractionId)
-}
-
-// MockGetAttractionDal is a mock of GetAttractionDal interface.
-type MockGetAttractionDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetAttractionDalMockRecorder
-}
-
-// MockGetAttractionDalMockRecorder is the mock recorder for MockGetAttractionDal.
-type MockGetAttractionDalMockRecorder struct {
-	mock *MockGetAttractionDal
-}
-
-// NewMockGetAttractionDal creates a new mock instance.
-func NewMockGetAttractionDal(ctrl *gomock.Controller) *MockGetAttractionDal {
-	mock := &MockGetAttractionDal{ctrl: ctrl}
-	mock.recorder = &MockGetAttractionDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetAttractionDal) EXPECT() *MockGetAttractionDalMockRecorder {
-	return m.recorder
-}
-
-// GetAttraction mocks base method.
-func (m *MockGetAttractionDal) GetAttraction(ctx context.Context) ([]*models.Attraction, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAttraction", ctx)
-	ret0, _ := ret[0].([]*models.Attraction)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAttraction indicates an expected call of GetAttraction.
-func (mr *MockGetAttractionDalMockRecorder) GetAttraction(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAttraction", reflect.TypeOf((*MockGetAttractionDal)(nil).GetAttraction), ctx)
-}
-
-// MockUpdateAttractionDal is a mock of UpdateAttractionDal interface.
-type MockUpdateAttractionDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockUpdateAttractionDalMockRecorder
-}
-
-// MockUpdateAttractionDalMockRecorder is the mock recorder for MockUpdateAttractionDal.
-type MockUpdateAttractionDalMockRecorder struct {
-	mock *MockUpdateAttractionDal
-}
-
-// NewMockUpdateAttractionDal creates a new mock instance.
-func NewMockUpdateAttractionDal(ctrl *gomock.Controller) *MockUpdateAttractionDal {
-	mock := &MockUpdateAttractionDal{ctrl: ctrl}
-	mock.recorder = &MockUpdateAttractionDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUpdateAttractionDal) EXPECT() *MockUpdateAttractionDalMockRecorder {
-	return m.recorder
-}
-
-// UpdateAttraction mocks base method.
-func (m *MockUpdateAttractionDal) UpdateAttraction(ctx context.Context, attraction *models.Attraction) (*models.Attraction, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateAttraction", ctx, attraction)
-	ret0, _ := ret[0].(*models.Attraction)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateAttraction indicates an expected call of UpdateAttraction.
-func (mr *MockUpdateAttractionDalMockRecorder) UpdateAttraction(ctx, attraction interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAttraction", reflect.TypeOf((*MockUpdateAttractionDal)(nil).UpdateAttraction), ctx, attraction)
-}
-
-// MockDeleteAttractionDal is a mock of DeleteAttractionDal interface.
-type MockDeleteAttractionDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockDeleteAttractionDalMockRecorder
-}
-
-// MockDeleteAttractionDalMockRecorder is the mock recorder for MockDeleteAttractionDal.
-type MockDeleteAttractionDalMockRecorder struct {
-	mock *MockDeleteAttractionDal
-}
-
-// NewMockDeleteAttractionDal creates a new mock instance.
-func NewMockDeleteAttractionDal(ctrl *gomock.Controller) *MockDeleteAttractionDal {
-	mock := &MockDeleteAttractionDal{ctrl: ctrl}
-	mock.recorder = &MockDeleteAttractionDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDeleteAttractionDal) EXPECT() *MockDeleteAttractionDalMockRecorder {
-	return m.recorder
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAttraction", reflect.TypeOf((*MockAttractionDal)(nil).CreateAttraction), ctx, attraction)
 }
 
 // DeleteAttraction mocks base method.
-func (m *MockDeleteAttractionDal) DeleteAttraction(ctx context.Context, attractionId string) (*models.Attraction, error) {
+func (m *MockAttractionDal) DeleteAttraction(ctx context.Context, attractionId string) (*models.Attraction, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAttraction", ctx, attractionId)
 	ret0, _ := ret[0].(*models.Attraction)
@@ -197,568 +61,95 @@ func (m *MockDeleteAttractionDal) DeleteAttraction(ctx context.Context, attracti
 }
 
 // DeleteAttraction indicates an expected call of DeleteAttraction.
-func (mr *MockDeleteAttractionDalMockRecorder) DeleteAttraction(ctx, attractionId interface{}) *gomock.Call {
+func (mr *MockAttractionDalMockRecorder) DeleteAttraction(ctx, attractionId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAttraction", reflect.TypeOf((*MockDeleteAttractionDal)(nil).DeleteAttraction), ctx, attractionId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAttraction", reflect.TypeOf((*MockAttractionDal)(nil).DeleteAttraction), ctx, attractionId)
 }
 
-// MockGetTagByIdDal is a mock of GetTagByIdDal interface.
-type MockGetTagByIdDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetTagByIdDalMockRecorder
-}
-
-// MockGetTagByIdDalMockRecorder is the mock recorder for MockGetTagByIdDal.
-type MockGetTagByIdDalMockRecorder struct {
-	mock *MockGetTagByIdDal
-}
-
-// NewMockGetTagByIdDal creates a new mock instance.
-func NewMockGetTagByIdDal(ctrl *gomock.Controller) *MockGetTagByIdDal {
-	mock := &MockGetTagByIdDal{ctrl: ctrl}
-	mock.recorder = &MockGetTagByIdDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetTagByIdDal) EXPECT() *MockGetTagByIdDalMockRecorder {
-	return m.recorder
-}
-
-// GetTagById mocks base method.
-func (m *MockGetTagByIdDal) GetTagById(ctx context.Context, tagId string) (*models.Tag, error) {
+// GetAttraction mocks base method.
+func (m *MockAttractionDal) GetAttraction(ctx context.Context) ([]*models.Attraction, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTagById", ctx, tagId)
-	ret0, _ := ret[0].(*models.Tag)
+	ret := m.ctrl.Call(m, "GetAttraction", ctx)
+	ret0, _ := ret[0].([]*models.Attraction)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetTagById indicates an expected call of GetTagById.
-func (mr *MockGetTagByIdDalMockRecorder) GetTagById(ctx, tagId interface{}) *gomock.Call {
+// GetAttraction indicates an expected call of GetAttraction.
+func (mr *MockAttractionDalMockRecorder) GetAttraction(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTagById", reflect.TypeOf((*MockGetTagByIdDal)(nil).GetTagById), ctx, tagId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAttraction", reflect.TypeOf((*MockAttractionDal)(nil).GetAttraction), ctx)
 }
 
-// MockGetTagDal is a mock of GetTagDal interface.
-type MockGetTagDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetTagDalMockRecorder
-}
-
-// MockGetTagDalMockRecorder is the mock recorder for MockGetTagDal.
-type MockGetTagDalMockRecorder struct {
-	mock *MockGetTagDal
-}
-
-// NewMockGetTagDal creates a new mock instance.
-func NewMockGetTagDal(ctrl *gomock.Controller) *MockGetTagDal {
-	mock := &MockGetTagDal{ctrl: ctrl}
-	mock.recorder = &MockGetTagDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetTagDal) EXPECT() *MockGetTagDalMockRecorder {
-	return m.recorder
-}
-
-// GetTag mocks base method.
-func (m *MockGetTagDal) GetTag(ctx context.Context) ([]*models.Tag, error) {
+// GetAttractionById mocks base method.
+func (m *MockAttractionDal) GetAttractionById(ctx context.Context, attractionId string) (*models.Attraction, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTag", ctx)
-	ret0, _ := ret[0].([]*models.Tag)
+	ret := m.ctrl.Call(m, "GetAttractionById", ctx, attractionId)
+	ret0, _ := ret[0].(*models.Attraction)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetTag indicates an expected call of GetTag.
-func (mr *MockGetTagDalMockRecorder) GetTag(ctx interface{}) *gomock.Call {
+// GetAttractionById indicates an expected call of GetAttractionById.
+func (mr *MockAttractionDalMockRecorder) GetAttractionById(ctx, attractionId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTag", reflect.TypeOf((*MockGetTagDal)(nil).GetTag), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAttractionById", reflect.TypeOf((*MockAttractionDal)(nil).GetAttractionById), ctx, attractionId)
 }
 
-// MockUpdateTagDal is a mock of UpdateTagDal interface.
-type MockUpdateTagDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockUpdateTagDalMockRecorder
-}
-
-// MockUpdateTagDalMockRecorder is the mock recorder for MockUpdateTagDal.
-type MockUpdateTagDalMockRecorder struct {
-	mock *MockUpdateTagDal
-}
-
-// NewMockUpdateTagDal creates a new mock instance.
-func NewMockUpdateTagDal(ctrl *gomock.Controller) *MockUpdateTagDal {
-	mock := &MockUpdateTagDal{ctrl: ctrl}
-	mock.recorder = &MockUpdateTagDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUpdateTagDal) EXPECT() *MockUpdateTagDalMockRecorder {
-	return m.recorder
-}
-
-// UpdateTag mocks base method.
-func (m *MockUpdateTagDal) UpdateTag(ctx context.Context, tag *models.Tag) (*models.Tag, error) {
+// GetDB mocks base method.
+func (m *MockAttractionDal) GetDB() *mongo.Database {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateTag", ctx, tag)
-	ret0, _ := ret[0].(*models.Tag)
+	ret := m.ctrl.Call(m, "GetDB")
+	ret0, _ := ret[0].(*mongo.Database)
+	return ret0
+}
+
+// GetDB indicates an expected call of GetDB.
+func (mr *MockAttractionDalMockRecorder) GetDB() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDB", reflect.TypeOf((*MockAttractionDal)(nil).GetDB))
+}
+
+// UpdateAttraction mocks base method.
+func (m *MockAttractionDal) UpdateAttraction(ctx context.Context, attraction *models.Attraction) (*models.Attraction, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateAttraction", ctx, attraction)
+	ret0, _ := ret[0].(*models.Attraction)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// UpdateTag indicates an expected call of UpdateTag.
-func (mr *MockUpdateTagDalMockRecorder) UpdateTag(ctx, tag interface{}) *gomock.Call {
+// UpdateAttraction indicates an expected call of UpdateAttraction.
+func (mr *MockAttractionDalMockRecorder) UpdateAttraction(ctx, attraction interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTag", reflect.TypeOf((*MockUpdateTagDal)(nil).UpdateTag), ctx, tag)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAttraction", reflect.TypeOf((*MockAttractionDal)(nil).UpdateAttraction), ctx, attraction)
 }
 
-// MockDeleteTagDal is a mock of DeleteTagDal interface.
-type MockDeleteTagDal struct {
+// MockTagDal is a mock of TagDal interface.
+type MockTagDal struct {
 	ctrl     *gomock.Controller
-	recorder *MockDeleteTagDalMockRecorder
+	recorder *MockTagDalMockRecorder
 }
 
-// MockDeleteTagDalMockRecorder is the mock recorder for MockDeleteTagDal.
-type MockDeleteTagDalMockRecorder struct {
-	mock *MockDeleteTagDal
+// MockTagDalMockRecorder is the mock recorder for MockTagDal.
+type MockTagDalMockRecorder struct {
+	mock *MockTagDal
 }
 
-// NewMockDeleteTagDal creates a new mock instance.
-func NewMockDeleteTagDal(ctrl *gomock.Controller) *MockDeleteTagDal {
-	mock := &MockDeleteTagDal{ctrl: ctrl}
-	mock.recorder = &MockDeleteTagDalMockRecorder{mock}
+// NewMockTagDal creates a new mock instance.
+func NewMockTagDal(ctrl *gomock.Controller) *MockTagDal {
+	mock := &MockTagDal{ctrl: ctrl}
+	mock.recorder = &MockTagDalMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDeleteTagDal) EXPECT() *MockDeleteTagDalMockRecorder {
-	return m.recorder
-}
-
-// DeleteTag mocks base method.
-func (m *MockDeleteTagDal) DeleteTag(ctx context.Context, tagId string) (*models.Tag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteTag", ctx, tagId)
-	ret0, _ := ret[0].(*models.Tag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// DeleteTag indicates an expected call of DeleteTag.
-func (mr *MockDeleteTagDalMockRecorder) DeleteTag(ctx, tagId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTag", reflect.TypeOf((*MockDeleteTagDal)(nil).DeleteTag), ctx, tagId)
-}
-
-// MockCreateEventDal is a mock of CreateEventDal interface.
-type MockCreateEventDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockCreateEventDalMockRecorder
-}
-
-// MockCreateEventDalMockRecorder is the mock recorder for MockCreateEventDal.
-type MockCreateEventDalMockRecorder struct {
-	mock *MockCreateEventDal
-}
-
-// NewMockCreateEventDal creates a new mock instance.
-func NewMockCreateEventDal(ctrl *gomock.Controller) *MockCreateEventDal {
-	mock := &MockCreateEventDal{ctrl: ctrl}
-	mock.recorder = &MockCreateEventDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCreateEventDal) EXPECT() *MockCreateEventDalMockRecorder {
-	return m.recorder
-}
-
-// CreateEvent mocks base method.
-func (m *MockCreateEventDal) CreateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateEvent", ctx, event)
-	ret0, _ := ret[0].(*models.Event)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateEvent indicates an expected call of CreateEvent.
-func (mr *MockCreateEventDalMockRecorder) CreateEvent(ctx, event interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEvent", reflect.TypeOf((*MockCreateEventDal)(nil).CreateEvent), ctx, event)
-}
-
-// MockGetEventByIdDal is a mock of GetEventByIdDal interface.
-type MockGetEventByIdDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetEventByIdDalMockRecorder
-}
-
-// MockGetEventByIdDalMockRecorder is the mock recorder for MockGetEventByIdDal.
-type MockGetEventByIdDalMockRecorder struct {
-	mock *MockGetEventByIdDal
-}
-
-// NewMockGetEventByIdDal creates a new mock instance.
-func NewMockGetEventByIdDal(ctrl *gomock.Controller) *MockGetEventByIdDal {
-	mock := &MockGetEventByIdDal{ctrl: ctrl}
-	mock.recorder = &MockGetEventByIdDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetEventByIdDal) EXPECT() *MockGetEventByIdDalMockRecorder {
-	return m.recorder
-}
-
-// GetEventById mocks base method.
-func (m *MockGetEventByIdDal) GetEventById(ctx context.Context, eventId string) (*models.Event, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetEventById", ctx, eventId)
-	ret0, _ := ret[0].(*models.Event)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetEventById indicates an expected call of GetEventById.
-func (mr *MockGetEventByIdDalMockRecorder) GetEventById(ctx, eventId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEventById", reflect.TypeOf((*MockGetEventByIdDal)(nil).GetEventById), ctx, eventId)
-}
-
-// MockGetEventDal is a mock of GetEventDal interface.
-type MockGetEventDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetEventDalMockRecorder
-}
-
-// MockGetEventDalMockRecorder is the mock recorder for MockGetEventDal.
-type MockGetEventDalMockRecorder struct {
-	mock *MockGetEventDal
-}
-
-// NewMockGetEventDal creates a new mock instance.
-func NewMockGetEventDal(ctrl *gomock.Controller) *MockGetEventDal {
-	mock := &MockGetEventDal{ctrl: ctrl}
-	mock.recorder = &MockGetEventDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetEventDal) EXPECT() *MockGetEventDalMockRecorder {
-	return m.recorder
-}
-
-// GetEvent mocks base method.
-func (m *MockGetEventDal) GetEvent(ctx context.Context) ([]*models.Event, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetEvent", ctx)
-	ret0, _ := ret[0].([]*models.Event)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetEvent indicates an expected call of GetEvent.
-func (mr *MockGetEventDalMockRecorder) GetEvent(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEvent", reflect.TypeOf((*MockGetEventDal)(nil).GetEvent), ctx)
-}
-
-// MockUpdateEventDal is a mock of UpdateEventDal interface.
-type MockUpdateEventDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockUpdateEventDalMockRecorder
-}
-
-// MockUpdateEventDalMockRecorder is the mock recorder for MockUpdateEventDal.
-type MockUpdateEventDalMockRecorder struct {
-	mock *MockUpdateEventDal
-}
-
-// NewMockUpdateEventDal creates a new mock instance.
-func NewMockUpdateEventDal(ctrl *gomock.Controller) *MockUpdateEventDal {
-	mock := &MockUpdateEventDal{ctrl: ctrl}
-	mock.recorder = &MockUpdateEventDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUpdateEventDal) EXPECT() *MockUpdateEventDalMockRecorder {
-	return m.recorder
-}
-
-// UpdateEvent mocks base method.
-func (m *MockUpdateEventDal) UpdateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateEvent", ctx, event)
-	ret0, _ := ret[0].(*models.Event)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateEvent indicates an expected call of UpdateEvent.
-func (mr *MockUpdateEventDalMockRecorder) UpdateEvent(ctx, event interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEvent", reflect.TypeOf((*MockUpdateEventDal)(nil).UpdateEvent), ctx, event)
-}
-
-// MockDeleteEventDal is a mock of DeleteEventDal interface.
-type MockDeleteEventDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockDeleteEventDalMockRecorder
-}
-
-// MockDeleteEventDalMockRecorder is the mock recorder for MockDeleteEventDal.
-type MockDeleteEventDalMockRecorder struct {
-	mock *MockDeleteEventDal
-}
-
-// NewMockDeleteEventDal creates a new mock instance.
-func NewMockDeleteEventDal(ctrl *gomock.Controller) *MockDeleteEventDal {
-	mock := &MockDeleteEventDal{ctrl: ctrl}
-	mock.recorder = &MockDeleteEventDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDeleteEventDal) EXPECT() *MockDeleteEventDalMockRecorder {
-	return m.recorder
-}
-
-// DeleteEvent mocks base method.
-func (m *MockDeleteEventDal) DeleteEvent(ctx context.Context, eventId string) (*models.Event, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteEvent", ctx, eventId)
-	ret0, _ := ret[0].(*models.Event)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// DeleteEvent indicates an expected call of DeleteEvent.
-func (mr *MockDeleteEventDalMockRecorder) DeleteEvent(ctx, eventId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEvent", reflect.TypeOf((*MockDeleteEventDal)(nil).DeleteEvent), ctx, eventId)
-}
-
-// MockCreateRatingDal is a mock of CreateRatingDal interface.
-type MockCreateRatingDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockCreateRatingDalMockRecorder
-}
-
-// MockCreateRatingDalMockRecorder is the mock recorder for MockCreateRatingDal.
-type MockCreateRatingDalMockRecorder struct {
-	mock *MockCreateRatingDal
-}
-
-// NewMockCreateRatingDal creates a new mock instance.
-func NewMockCreateRatingDal(ctrl *gomock.Controller) *MockCreateRatingDal {
-	mock := &MockCreateRatingDal{ctrl: ctrl}
-	mock.recorder = &MockCreateRatingDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCreateRatingDal) EXPECT() *MockCreateRatingDalMockRecorder {
-	return m.recorder
-}
-
-// CreateRating mocks base method.
-func (m *MockCreateRatingDal) CreateRating(ctx context.Context, rating *models.Rating) (*models.Rating, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateRating", ctx, rating)
-	ret0, _ := ret[0].(*models.Rating)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateRating indicates an expected call of CreateRating.
-func (mr *MockCreateRatingDalMockRecorder) CreateRating(ctx, rating interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRating", reflect.TypeOf((*MockCreateRatingDal)(nil).CreateRating), ctx, rating)
-}
-
-// MockGetRatingByIdDal is a mock of GetRatingByIdDal interface.
-type MockGetRatingByIdDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetRatingByIdDalMockRecorder
-}
-
-// MockGetRatingByIdDalMockRecorder is the mock recorder for MockGetRatingByIdDal.
-type MockGetRatingByIdDalMockRecorder struct {
-	mock *MockGetRatingByIdDal
-}
-
-// NewMockGetRatingByIdDal creates a new mock instance.
-func NewMockGetRatingByIdDal(ctrl *gomock.Controller) *MockGetRatingByIdDal {
-	mock := &MockGetRatingByIdDal{ctrl: ctrl}
-	mock.recorder = &MockGetRatingByIdDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetRatingByIdDal) EXPECT() *MockGetRatingByIdDalMockRecorder {
-	return m.recorder
-}
-
-// GetRatingById mocks base method.
-func (m *MockGetRatingByIdDal) GetRatingById(ctx context.Context, attractionId string) (*models.Rating, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRatingById", ctx, attractionId)
-	ret0, _ := ret[0].(*models.Rating)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetRatingById indicates an expected call of GetRatingById.
-func (mr *MockGetRatingByIdDalMockRecorder) GetRatingById(ctx, attractionId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRatingById", reflect.TypeOf((*MockGetRatingByIdDal)(nil).GetRatingById), ctx, attractionId)
-}
-
-// MockGetRatingDal is a mock of GetRatingDal interface.
-type MockGetRatingDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetRatingDalMockRecorder
-}
-
-// MockGetRatingDalMockRecorder is the mock recorder for MockGetRatingDal.
-type MockGetRatingDalMockRecorder struct {
-	mock *MockGetRatingDal
-}
-
-// NewMockGetRatingDal creates a new mock instance.
-func NewMockGetRatingDal(ctrl *gomock.Controller) *MockGetRatingDal {
-	mock := &MockGetRatingDal{ctrl: ctrl}
-	mock.recorder = &MockGetRatingDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetRatingDal) EXPECT() *MockGetRatingDalMockRecorder {
-	return m.recorder
-}
-
-// GetRating mocks base method.
-func (m *MockGetRatingDal) GetRating(ctx context.Context) ([]*models.Rating, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRating", ctx)
-	ret0, _ := ret[0].([]*models.Rating)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetRating indicates an expected call of GetRating.
-func (mr *MockGetRatingDalMockRecorder) GetRating(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRating", reflect.TypeOf((*MockGetRatingDal)(nil).GetRating), ctx)
-}
-
-// MockUpdateRatingDal is a mock of UpdateRatingDal interface.
-type MockUpdateRatingDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockUpdateRatingDalMockRecorder
-}
-
-// MockUpdateRatingDalMockRecorder is the mock recorder for MockUpdateRatingDal.
-type MockUpdateRatingDalMockRecorder struct {
-	mock *MockUpdateRatingDal
-}
-
-// NewMockUpdateRatingDal creates a new mock instance.
-func NewMockUpdateRatingDal(ctrl *gomock.Controller) *MockUpdateRatingDal {
-	mock := &MockUpdateRatingDal{ctrl: ctrl}
-	mock.recorder = &MockUpdateRatingDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUpdateRatingDal) EXPECT() *MockUpdateRatingDalMockRecorder {
-	return m.recorder
-}
-
-// UpdateRating mocks base method.
-func (m *MockUpdateRatingDal) UpdateRating(ctx context.Context, rating *models.Rating) (*models.Rating, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateRating", ctx, rating)
-	ret0, _ := ret[0].(*models.Rating)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateRating indicates an expected call of UpdateRating.
-func (mr *MockUpdateRatingDalMockRecorder) UpdateRating(ctx, rating interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRating", reflect.TypeOf((*MockUpdateRatingDal)(nil).UpdateRating), ctx, rating)
-}
-
-// MockDeleteRatingDal is a mock of DeleteRatingDal interface.
-type MockDeleteRatingDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockDeleteRatingDalMockRecorder
-}
-
-// MockDeleteRatingDalMockRecorder is the mock recorder for MockDeleteRatingDal.
-type MockDeleteRatingDalMockRecorder struct {
-	mock *MockDeleteRatingDal
-}
-
-// NewMockDeleteRatingDal creates a new mock instance.
-func NewMockDeleteRatingDal(ctrl *gomock.Controller) *MockDeleteRatingDal {
-	mock := &MockDeleteRatingDal{ctrl: ctrl}
-	mock.recorder = &MockDeleteRatingDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDeleteRatingDal) EXPECT() *MockDeleteRatingDalMockRecorder {
-	return m.recorder
-}
-
-// DeleteRating mocks base method.
-func (m *MockDeleteRatingDal) DeleteRating(ctx context.Context, ratingId string) (*models.Rating, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteRating", ctx, ratingId)
-	ret0, _ := ret[0].(*models.Rating)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// DeleteRating indicates an expected call of DeleteRating.
-func (mr *MockDeleteRatingDalMockRecorder) DeleteRating(ctx, ratingId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRating", reflect.TypeOf((*MockDeleteRatingDal)(nil).DeleteRating), ctx, ratingId)
-}
-
-// MockCreateTagDal is a mock of CreateTagDal interface.
-type MockCreateTagDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockCreateTagDalMockRecorder
-}
-
-// MockCreateTagDalMockRecorder is the mock recorder for MockCreateTagDal.
-type MockCreateTagDalMockRecorder struct {
-	mock *MockCreateTagDal
-}
-
-// NewMockCreateTagDal creates a new mock instance.
-func NewMockCreateTagDal(ctrl *gomock.Controller) *MockCreateTagDal {
-	mock := &MockCreateTagDal{ctrl: ctrl}
-	mock.recorder = &MockCreateTagDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCreateTagDal) EXPECT() *MockCreateTagDalMockRecorder {
+func (m *MockTagDal) EXPECT() *MockTagDalMockRecorder {
 	return m.recorder
 }
 
 // CreateTag mocks base method.
-func (m *MockCreateTagDal) CreateTag(ctx context.Context, tag *models.Tag) (*models.Tag, error) {
+func (m *MockTagDal) CreateTag(ctx context.Context, tag *models.Tag) (*models.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateTag", ctx, tag)
 	ret0, _ := ret[0].(*models.Tag)
@@ -767,36 +158,334 @@ func (m *MockCreateTagDal) CreateTag(ctx context.Context, tag *models.Tag) (*mod
 }
 
 // CreateTag indicates an expected call of CreateTag.
-func (mr *MockCreateTagDalMockRecorder) CreateTag(ctx, tag interface{}) *gomock.Call {
+func (mr *MockTagDalMockRecorder) CreateTag(ctx, tag interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTag", reflect.TypeOf((*MockCreateTagDal)(nil).CreateTag), ctx, tag)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTag", reflect.TypeOf((*MockTagDal)(nil).CreateTag), ctx, tag)
 }
 
-// MockCreateItineraryDal is a mock of CreateItineraryDal interface.
-type MockCreateItineraryDal struct {
+// DeleteTag mocks base method.
+func (m *MockTagDal) DeleteTag(ctx context.Context, tagId string) (*models.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTag", ctx, tagId)
+	ret0, _ := ret[0].(*models.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTag indicates an expected call of DeleteTag.
+func (mr *MockTagDalMockRecorder) DeleteTag(ctx, tagId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTag", reflect.TypeOf((*MockTagDal)(nil).DeleteTag), ctx, tagId)
+}
+
+// GetDB mocks base method.
+func (m *MockTagDal) GetDB() *mongo.Database {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDB")
+	ret0, _ := ret[0].(*mongo.Database)
+	return ret0
+}
+
+// GetDB indicates an expected call of GetDB.
+func (mr *MockTagDalMockRecorder) GetDB() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDB", reflect.TypeOf((*MockTagDal)(nil).GetDB))
+}
+
+// GetTag mocks base method.
+func (m *MockTagDal) GetTag(ctx context.Context) ([]*models.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTag", ctx)
+	ret0, _ := ret[0].([]*models.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTag indicates an expected call of GetTag.
+func (mr *MockTagDalMockRecorder) GetTag(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTag", reflect.TypeOf((*MockTagDal)(nil).GetTag), ctx)
+}
+
+// GetTagById mocks base method.
+func (m *MockTagDal) GetTagById(ctx context.Context, tagId string) (*models.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTagById", ctx, tagId)
+	ret0, _ := ret[0].(*models.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTagById indicates an expected call of GetTagById.
+func (mr *MockTagDalMockRecorder) GetTagById(ctx, tagId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTagById", reflect.TypeOf((*MockTagDal)(nil).GetTagById), ctx, tagId)
+}
+
+// UpdateTag mocks base method.
+func (m *MockTagDal) UpdateTag(ctx context.Context, tag *models.Tag) (*models.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTag", ctx, tag)
+	ret0, _ := ret[0].(*models.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateTag indicates an expected call of UpdateTag.
+func (mr *MockTagDalMockRecorder) UpdateTag(ctx, tag interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTag", reflect.TypeOf((*MockTagDal)(nil).UpdateTag), ctx, tag)
+}
+
+// MockEventDal is a mock of EventDal interface.
+type MockEventDal struct {
 	ctrl     *gomock.Controller
-	recorder *MockCreateItineraryDalMockRecorder
+	recorder *MockEventDalMockRecorder
 }
 
-// MockCreateItineraryDalMockRecorder is the mock recorder for MockCreateItineraryDal.
-type MockCreateItineraryDalMockRecorder struct {
-	mock *MockCreateItineraryDal
+// MockEventDalMockRecorder is the mock recorder for MockEventDal.
+type MockEventDalMockRecorder struct {
+	mock *MockEventDal
 }
 
-// NewMockCreateItineraryDal creates a new mock instance.
-func NewMockCreateItineraryDal(ctrl *gomock.Controller) *MockCreateItineraryDal {
-	mock := &MockCreateItineraryDal{ctrl: ctrl}
-	mock.recorder = &MockCreateItineraryDalMockRecorder{mock}
+// NewMockEventDal creates a new mock instance.
+func NewMockEventDal(ctrl *gomock.Controller) *MockEventDal {
+	mock := &MockEventDal{ctrl: ctrl}
+	mock.recorder = &MockEventDalMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCreateItineraryDal) EXPECT() *MockCreateItineraryDalMockRecorder {
+func (m *MockEventDal) EXPECT() *MockEventDalMockRecorder {
+	return m.recorder
+}
+
+// CreateEvent mocks base method.
+func (m *MockEventDal) CreateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateEvent", ctx, event)
+	ret0, _ := ret[0].(*models.Event)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateEvent indicates an expected call of CreateEvent.
+func (mr *MockEventDalMockRecorder) CreateEvent(ctx, event interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEvent", reflect.TypeOf((*MockEventDal)(nil).CreateEvent), ctx, event)
+}
+
+// DeleteEvent mocks base method.
+func (m *MockEventDal) DeleteEvent(ctx context.Context, eventId string) (*models.Event, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteEvent", ctx, eventId)
+	ret0, _ := ret[0].(*models.Event)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteEvent indicates an expected call of DeleteEvent.
+func (mr *MockEventDalMockRecorder) DeleteEvent(ctx, eventId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEvent", reflect.TypeOf((*MockEventDal)(nil).DeleteEvent), ctx, eventId)
+}
+
+// GetDB mocks base method.
+func (m *MockEventDal) GetDB() *mongo.Database {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDB")
+	ret0, _ := ret[0].(*mongo.Database)
+	return ret0
+}
+
+// GetDB indicates an expected call of GetDB.
+func (mr *MockEventDalMockRecorder) GetDB() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDB", reflect.TypeOf((*MockEventDal)(nil).GetDB))
+}
+
+// GetEvent mocks base method.
+func (m *MockEventDal) GetEvent(ctx context.Context) ([]*models.Event, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetEvent", ctx)
+	ret0, _ := ret[0].([]*models.Event)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetEvent indicates an expected call of GetEvent.
+func (mr *MockEventDalMockRecorder) GetEvent(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEvent", reflect.TypeOf((*MockEventDal)(nil).GetEvent), ctx)
+}
+
+// GetEventById mocks base method.
+func (m *MockEventDal) GetEventById(ctx context.Context, eventId string) (*models.Event, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetEventById", ctx, eventId)
+	ret0, _ := ret[0].(*models.Event)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetEventById indicates an expected call of GetEventById.
+func (mr *MockEventDalMockRecorder) GetEventById(ctx, eventId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEventById", reflect.TypeOf((*MockEventDal)(nil).GetEventById), ctx, eventId)
+}
+
+// UpdateEvent mocks base method.
+func (m *MockEventDal) UpdateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateEvent", ctx, event)
+	ret0, _ := ret[0].(*models.Event)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateEvent indicates an expected call of UpdateEvent.
+func (mr *MockEventDalMockRecorder) UpdateEvent(ctx, event interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEvent", reflect.TypeOf((*MockEventDal)(nil).UpdateEvent), ctx, event)
+}
+
+// MockRatingDal is a mock of RatingDal interface.
+type MockRatingDal struct {
+	ctrl     *gomock.Controller
+	recorder *MockRatingDalMockRecorder
+}
+
+// MockRatingDalMockRecorder is the mock recorder for MockRatingDal.
+type MockRatingDalMockRecorder struct {
+	mock *MockRatingDal
+}
+
+// NewMockRatingDal creates a new mock instance.
+func NewMockRatingDal(ctrl *gomock.Controller) *MockRatingDal {
+	mock := &MockRatingDal{ctrl: ctrl}
+	mock.recorder = &MockRatingDalMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockRatingDal) EXPECT() *MockRatingDalMockRecorder {
+	return m.recorder
+}
+
+// CreateRating mocks base method.
+func (m *MockRatingDal) CreateRating(ctx context.Context, rating *models.Rating) (*models.Rating, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateRating", ctx, rating)
+	ret0, _ := ret[0].(*models.Rating)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateRating indicates an expected call of CreateRating.
+func (mr *MockRatingDalMockRecorder) CreateRating(ctx, rating interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRating", reflect.TypeOf((*MockRatingDal)(nil).CreateRating), ctx, rating)
+}
+
+// DeleteRating mocks base method.
+func (m *MockRatingDal) DeleteRating(ctx context.Context, ratingId string) (*models.Rating, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteRating", ctx, ratingId)
+	ret0, _ := ret[0].(*models.Rating)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteRating indicates an expected call of DeleteRating.
+func (mr *MockRatingDalMockRecorder) DeleteRating(ctx, ratingId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRating", reflect.TypeOf((*MockRatingDal)(nil).DeleteRating), ctx, ratingId)
+}
+
+// GetDB mocks base method.
+func (m *MockRatingDal) GetDB() *mongo.Database {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDB")
+	ret0, _ := ret[0].(*mongo.Database)
+	return ret0
+}
+
+// GetDB indicates an expected call of GetDB.
+func (mr *MockRatingDalMockRecorder) GetDB() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDB", reflect.TypeOf((*MockRatingDal)(nil).GetDB))
+}
+
+// GetRating mocks base method.
+func (m *MockRatingDal) GetRating(ctx context.Context) ([]*models.Rating, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRating", ctx)
+	ret0, _ := ret[0].([]*models.Rating)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRating indicates an expected call of GetRating.
+func (mr *MockRatingDalMockRecorder) GetRating(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRating", reflect.TypeOf((*MockRatingDal)(nil).GetRating), ctx)
+}
+
+// GetRatingById mocks base method.
+func (m *MockRatingDal) GetRatingById(ctx context.Context, attractionId string) (*models.Rating, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRatingById", ctx, attractionId)
+	ret0, _ := ret[0].(*models.Rating)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRatingById indicates an expected call of GetRatingById.
+func (mr *MockRatingDalMockRecorder) GetRatingById(ctx, attractionId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRatingById", reflect.TypeOf((*MockRatingDal)(nil).GetRatingById), ctx, attractionId)
+}
+
+// UpdateRating mocks base method.
+func (m *MockRatingDal) UpdateRating(ctx context.Context, rating *models.Rating) (*models.Rating, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateRating", ctx, rating)
+	ret0, _ := ret[0].(*models.Rating)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateRating indicates an expected call of UpdateRating.
+func (mr *MockRatingDalMockRecorder) UpdateRating(ctx, rating interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRating", reflect.TypeOf((*MockRatingDal)(nil).UpdateRating), ctx, rating)
+}
+
+// MockItineraryDal is a mock of ItineraryDal interface.
+type MockItineraryDal struct {
+	ctrl     *gomock.Controller
+	recorder *MockItineraryDalMockRecorder
+}
+
+// MockItineraryDalMockRecorder is the mock recorder for MockItineraryDal.
+type MockItineraryDalMockRecorder struct {
+	mock *MockItineraryDal
+}
+
+// NewMockItineraryDal creates a new mock instance.
+func NewMockItineraryDal(ctrl *gomock.Controller) *MockItineraryDal {
+	mock := &MockItineraryDal{ctrl: ctrl}
+	mock.recorder = &MockItineraryDalMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockItineraryDal) EXPECT() *MockItineraryDalMockRecorder {
 	return m.recorder
 }
 
 // CreateItinerary mocks base method.
-func (m *MockCreateItineraryDal) CreateItinerary(ctx context.Context, itinerary *models.Itinerary) (*models.Itinerary, error) {
+func (m *MockItineraryDal) CreateItinerary(ctx context.Context, itinerary *models.Itinerary) (*models.Itinerary, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateItinerary", ctx, itinerary)
 	ret0, _ := ret[0].(*models.Itinerary)
@@ -805,150 +494,13 @@ func (m *MockCreateItineraryDal) CreateItinerary(ctx context.Context, itinerary 
 }
 
 // CreateItinerary indicates an expected call of CreateItinerary.
-func (mr *MockCreateItineraryDalMockRecorder) CreateItinerary(ctx, itinerary interface{}) *gomock.Call {
+func (mr *MockItineraryDalMockRecorder) CreateItinerary(ctx, itinerary interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateItinerary", reflect.TypeOf((*MockCreateItineraryDal)(nil).CreateItinerary), ctx, itinerary)
-}
-
-// MockGetItineraryByIdDal is a mock of GetItineraryByIdDal interface.
-type MockGetItineraryByIdDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetItineraryByIdDalMockRecorder
-}
-
-// MockGetItineraryByIdDalMockRecorder is the mock recorder for MockGetItineraryByIdDal.
-type MockGetItineraryByIdDalMockRecorder struct {
-	mock *MockGetItineraryByIdDal
-}
-
-// NewMockGetItineraryByIdDal creates a new mock instance.
-func NewMockGetItineraryByIdDal(ctrl *gomock.Controller) *MockGetItineraryByIdDal {
-	mock := &MockGetItineraryByIdDal{ctrl: ctrl}
-	mock.recorder = &MockGetItineraryByIdDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetItineraryByIdDal) EXPECT() *MockGetItineraryByIdDalMockRecorder {
-	return m.recorder
-}
-
-// GetItineraryById mocks base method.
-func (m *MockGetItineraryByIdDal) GetItineraryById(ctx context.Context, itineraryId string) (*models.Itinerary, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetItineraryById", ctx, itineraryId)
-	ret0, _ := ret[0].(*models.Itinerary)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetItineraryById indicates an expected call of GetItineraryById.
-func (mr *MockGetItineraryByIdDalMockRecorder) GetItineraryById(ctx, itineraryId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItineraryById", reflect.TypeOf((*MockGetItineraryByIdDal)(nil).GetItineraryById), ctx, itineraryId)
-}
-
-// MockGetItineraryDal is a mock of GetItineraryDal interface.
-type MockGetItineraryDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetItineraryDalMockRecorder
-}
-
-// MockGetItineraryDalMockRecorder is the mock recorder for MockGetItineraryDal.
-type MockGetItineraryDalMockRecorder struct {
-	mock *MockGetItineraryDal
-}
-
-// NewMockGetItineraryDal creates a new mock instance.
-func NewMockGetItineraryDal(ctrl *gomock.Controller) *MockGetItineraryDal {
-	mock := &MockGetItineraryDal{ctrl: ctrl}
-	mock.recorder = &MockGetItineraryDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetItineraryDal) EXPECT() *MockGetItineraryDalMockRecorder {
-	return m.recorder
-}
-
-// GetItinerary mocks base method.
-func (m *MockGetItineraryDal) GetItinerary(ctx context.Context) ([]*models.Itinerary, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetItinerary", ctx)
-	ret0, _ := ret[0].([]*models.Itinerary)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetItinerary indicates an expected call of GetItinerary.
-func (mr *MockGetItineraryDalMockRecorder) GetItinerary(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItinerary", reflect.TypeOf((*MockGetItineraryDal)(nil).GetItinerary), ctx)
-}
-
-// MockUpdateItineraryDal is a mock of UpdateItineraryDal interface.
-type MockUpdateItineraryDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockUpdateItineraryDalMockRecorder
-}
-
-// MockUpdateItineraryDalMockRecorder is the mock recorder for MockUpdateItineraryDal.
-type MockUpdateItineraryDalMockRecorder struct {
-	mock *MockUpdateItineraryDal
-}
-
-// NewMockUpdateItineraryDal creates a new mock instance.
-func NewMockUpdateItineraryDal(ctrl *gomock.Controller) *MockUpdateItineraryDal {
-	mock := &MockUpdateItineraryDal{ctrl: ctrl}
-	mock.recorder = &MockUpdateItineraryDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUpdateItineraryDal) EXPECT() *MockUpdateItineraryDalMockRecorder {
-	return m.recorder
-}
-
-// UpdateItinerary mocks base method.
-func (m *MockUpdateItineraryDal) UpdateItinerary(ctx context.Context, itinerary *models.Itinerary) (*models.Itinerary, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateItinerary", ctx, itinerary)
-	ret0, _ := ret[0].(*models.Itinerary)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateItinerary indicates an expected call of UpdateItinerary.
-func (mr *MockUpdateItineraryDalMockRecorder) UpdateItinerary(ctx, itinerary interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateItinerary", reflect.TypeOf((*MockUpdateItineraryDal)(nil).UpdateItinerary), ctx, itinerary)
-}
-
-// MockDeleteItineraryDal is a mock of DeleteItineraryDal interface.
-type MockDeleteItineraryDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockDeleteItineraryDalMockRecorder
-}
-
-// MockDeleteItineraryDalMockRecorder is the mock recorder for MockDeleteItineraryDal.
-type MockDeleteItineraryDalMockRecorder struct {
-	mock *MockDeleteItineraryDal
-}
-
-// NewMockDeleteItineraryDal creates a new mock instance.
-func NewMockDeleteItineraryDal(ctrl *gomock.Controller) *MockDeleteItineraryDal {
-	mock := &MockDeleteItineraryDal{ctrl: ctrl}
-	mock.recorder = &MockDeleteItineraryDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDeleteItineraryDal) EXPECT() *MockDeleteItineraryDalMockRecorder {
-	return m.recorder
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateItinerary", reflect.TypeOf((*MockItineraryDal)(nil).CreateItinerary), ctx, itinerary)
 }
 
 // DeleteItinerary mocks base method.
-func (m *MockDeleteItineraryDal) DeleteItinerary(ctx context.Context, itineraryId string) (*models.Itinerary, error) {
+func (m *MockItineraryDal) DeleteItinerary(ctx context.Context, itineraryId string) (*models.Itinerary, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteItinerary", ctx, itineraryId)
 	ret0, _ := ret[0].(*models.Itinerary)
@@ -957,36 +509,95 @@ func (m *MockDeleteItineraryDal) DeleteItinerary(ctx context.Context, itineraryI
 }
 
 // DeleteItinerary indicates an expected call of DeleteItinerary.
-func (mr *MockDeleteItineraryDalMockRecorder) DeleteItinerary(ctx, itineraryId interface{}) *gomock.Call {
+func (mr *MockItineraryDalMockRecorder) DeleteItinerary(ctx, itineraryId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteItinerary", reflect.TypeOf((*MockDeleteItineraryDal)(nil).DeleteItinerary), ctx, itineraryId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteItinerary", reflect.TypeOf((*MockItineraryDal)(nil).DeleteItinerary), ctx, itineraryId)
 }
 
-// MockCreateUserDal is a mock of CreateUserDal interface.
-type MockCreateUserDal struct {
+// GetDB mocks base method.
+func (m *MockItineraryDal) GetDB() *mongo.Database {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDB")
+	ret0, _ := ret[0].(*mongo.Database)
+	return ret0
+}
+
+// GetDB indicates an expected call of GetDB.
+func (mr *MockItineraryDalMockRecorder) GetDB() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDB", reflect.TypeOf((*MockItineraryDal)(nil).GetDB))
+}
+
+// GetItinerary mocks base method.
+func (m *MockItineraryDal) GetItinerary(ctx context.Context) ([]*models.Itinerary, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetItinerary", ctx)
+	ret0, _ := ret[0].([]*models.Itinerary)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetItinerary indicates an expected call of GetItinerary.
+func (mr *MockItineraryDalMockRecorder) GetItinerary(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItinerary", reflect.TypeOf((*MockItineraryDal)(nil).GetItinerary), ctx)
+}
+
+// GetItineraryById mocks base method.
+func (m *MockItineraryDal) GetItineraryById(ctx context.Context, itineraryId string) (*models.Itinerary, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetItineraryById", ctx, itineraryId)
+	ret0, _ := ret[0].(*models.Itinerary)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetItineraryById indicates an expected call of GetItineraryById.
+func (mr *MockItineraryDalMockRecorder) GetItineraryById(ctx, itineraryId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItineraryById", reflect.TypeOf((*MockItineraryDal)(nil).GetItineraryById), ctx, itineraryId)
+}
+
+// UpdateItinerary mocks base method.
+func (m *MockItineraryDal) UpdateItinerary(ctx context.Context, itinerary *models.Itinerary) (*models.Itinerary, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateItinerary", ctx, itinerary)
+	ret0, _ := ret[0].(*models.Itinerary)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateItinerary indicates an expected call of UpdateItinerary.
+func (mr *MockItineraryDalMockRecorder) UpdateItinerary(ctx, itinerary interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateItinerary", reflect.TypeOf((*MockItineraryDal)(nil).UpdateItinerary), ctx, itinerary)
+}
+
+// MockUserDal is a mock of UserDal interface.
+type MockUserDal struct {
 	ctrl     *gomock.Controller
-	recorder *MockCreateUserDalMockRecorder
+	recorder *MockUserDalMockRecorder
 }
 
-// MockCreateUserDalMockRecorder is the mock recorder for MockCreateUserDal.
-type MockCreateUserDalMockRecorder struct {
-	mock *MockCreateUserDal
+// MockUserDalMockRecorder is the mock recorder for MockUserDal.
+type MockUserDalMockRecorder struct {
+	mock *MockUserDal
 }
 
-// NewMockCreateUserDal creates a new mock instance.
-func NewMockCreateUserDal(ctrl *gomock.Controller) *MockCreateUserDal {
-	mock := &MockCreateUserDal{ctrl: ctrl}
-	mock.recorder = &MockCreateUserDalMockRecorder{mock}
+// NewMockUserDal creates a new mock instance.
+func NewMockUserDal(ctrl *gomock.Controller) *MockUserDal {
+	mock := &MockUserDal{ctrl: ctrl}
+	mock.recorder = &MockUserDalMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCreateUserDal) EXPECT() *MockCreateUserDalMockRecorder {
+func (m *MockUserDal) EXPECT() *MockUserDalMockRecorder {
 	return m.recorder
 }
 
 // CreateUser mocks base method.
-func (m *MockCreateUserDal) CreateUser(ctx context.Context, user *models.User) (*models.User, error) {
+func (m *MockUserDal) CreateUser(ctx context.Context, user *models.User) (*models.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", ctx, user)
 	ret0, _ := ret[0].(*models.User)
@@ -995,150 +606,13 @@ func (m *MockCreateUserDal) CreateUser(ctx context.Context, user *models.User) (
 }
 
 // CreateUser indicates an expected call of CreateUser.
-func (mr *MockCreateUserDalMockRecorder) CreateUser(ctx, user interface{}) *gomock.Call {
+func (mr *MockUserDalMockRecorder) CreateUser(ctx, user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockCreateUserDal)(nil).CreateUser), ctx, user)
-}
-
-// MockGetUserByIdDal is a mock of GetUserByIdDal interface.
-type MockGetUserByIdDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetUserByIdDalMockRecorder
-}
-
-// MockGetUserByIdDalMockRecorder is the mock recorder for MockGetUserByIdDal.
-type MockGetUserByIdDalMockRecorder struct {
-	mock *MockGetUserByIdDal
-}
-
-// NewMockGetUserByIdDal creates a new mock instance.
-func NewMockGetUserByIdDal(ctrl *gomock.Controller) *MockGetUserByIdDal {
-	mock := &MockGetUserByIdDal{ctrl: ctrl}
-	mock.recorder = &MockGetUserByIdDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetUserByIdDal) EXPECT() *MockGetUserByIdDalMockRecorder {
-	return m.recorder
-}
-
-// GetUserById mocks base method.
-func (m *MockGetUserByIdDal) GetUserById(ctx context.Context, userId string) (*models.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUserById", ctx, userId)
-	ret0, _ := ret[0].(*models.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetUserById indicates an expected call of GetUserById.
-func (mr *MockGetUserByIdDalMockRecorder) GetUserById(ctx, userId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserById", reflect.TypeOf((*MockGetUserByIdDal)(nil).GetUserById), ctx, userId)
-}
-
-// MockGetUserDal is a mock of GetUserDal interface.
-type MockGetUserDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetUserDalMockRecorder
-}
-
-// MockGetUserDalMockRecorder is the mock recorder for MockGetUserDal.
-type MockGetUserDalMockRecorder struct {
-	mock *MockGetUserDal
-}
-
-// NewMockGetUserDal creates a new mock instance.
-func NewMockGetUserDal(ctrl *gomock.Controller) *MockGetUserDal {
-	mock := &MockGetUserDal{ctrl: ctrl}
-	mock.recorder = &MockGetUserDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetUserDal) EXPECT() *MockGetUserDalMockRecorder {
-	return m.recorder
-}
-
-// GetUser mocks base method.
-func (m *MockGetUserDal) GetUser(ctx context.Context) ([]*models.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUser", ctx)
-	ret0, _ := ret[0].([]*models.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetUser indicates an expected call of GetUser.
-func (mr *MockGetUserDalMockRecorder) GetUser(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockGetUserDal)(nil).GetUser), ctx)
-}
-
-// MockUpdateUserDal is a mock of UpdateUserDal interface.
-type MockUpdateUserDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockUpdateUserDalMockRecorder
-}
-
-// MockUpdateUserDalMockRecorder is the mock recorder for MockUpdateUserDal.
-type MockUpdateUserDalMockRecorder struct {
-	mock *MockUpdateUserDal
-}
-
-// NewMockUpdateUserDal creates a new mock instance.
-func NewMockUpdateUserDal(ctrl *gomock.Controller) *MockUpdateUserDal {
-	mock := &MockUpdateUserDal{ctrl: ctrl}
-	mock.recorder = &MockUpdateUserDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUpdateUserDal) EXPECT() *MockUpdateUserDalMockRecorder {
-	return m.recorder
-}
-
-// UpdateUser mocks base method.
-func (m *MockUpdateUserDal) UpdateUser(ctx context.Context, user *models.User) (*models.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUser", ctx, user)
-	ret0, _ := ret[0].(*models.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateUser indicates an expected call of UpdateUser.
-func (mr *MockUpdateUserDalMockRecorder) UpdateUser(ctx, user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockUpdateUserDal)(nil).UpdateUser), ctx, user)
-}
-
-// MockDeleteUserDal is a mock of DeleteUserDal interface.
-type MockDeleteUserDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockDeleteUserDalMockRecorder
-}
-
-// MockDeleteUserDalMockRecorder is the mock recorder for MockDeleteUserDal.
-type MockDeleteUserDalMockRecorder struct {
-	mock *MockDeleteUserDal
-}
-
-// NewMockDeleteUserDal creates a new mock instance.
-func NewMockDeleteUserDal(ctrl *gomock.Controller) *MockDeleteUserDal {
-	mock := &MockDeleteUserDal{ctrl: ctrl}
-	mock.recorder = &MockDeleteUserDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDeleteUserDal) EXPECT() *MockDeleteUserDalMockRecorder {
-	return m.recorder
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockUserDal)(nil).CreateUser), ctx, user)
 }
 
 // DeleteUser mocks base method.
-func (m *MockDeleteUserDal) DeleteUser(ctx context.Context, userId string) (*models.User, error) {
+func (m *MockUserDal) DeleteUser(ctx context.Context, userId string) (*models.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUser", ctx, userId)
 	ret0, _ := ret[0].(*models.User)
@@ -1147,197 +621,66 @@ func (m *MockDeleteUserDal) DeleteUser(ctx context.Context, userId string) (*mod
 }
 
 // DeleteUser indicates an expected call of DeleteUser.
-func (mr *MockDeleteUserDalMockRecorder) DeleteUser(ctx, userId interface{}) *gomock.Call {
+func (mr *MockUserDalMockRecorder) DeleteUser(ctx, userId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockDeleteUserDal)(nil).DeleteUser), ctx, userId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockUserDal)(nil).DeleteUser), ctx, userId)
 }
 
-// MockCreateCoordinateDal is a mock of CreateCoordinateDal interface.
-type MockCreateCoordinateDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockCreateCoordinateDalMockRecorder
-}
-
-// MockCreateCoordinateDalMockRecorder is the mock recorder for MockCreateCoordinateDal.
-type MockCreateCoordinateDalMockRecorder struct {
-	mock *MockCreateCoordinateDal
-}
-
-// NewMockCreateCoordinateDal creates a new mock instance.
-func NewMockCreateCoordinateDal(ctrl *gomock.Controller) *MockCreateCoordinateDal {
-	mock := &MockCreateCoordinateDal{ctrl: ctrl}
-	mock.recorder = &MockCreateCoordinateDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCreateCoordinateDal) EXPECT() *MockCreateCoordinateDalMockRecorder {
-	return m.recorder
-}
-
-// CreateCoordinate mocks base method.
-func (m *MockCreateCoordinateDal) CreateCoordinate(ctx context.Context, coordinate *models.Coordinate) (*models.Coordinate, error) {
+// GetDB mocks base method.
+func (m *MockUserDal) GetDB() *mongo.Database {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateCoordinate", ctx, coordinate)
-	ret0, _ := ret[0].(*models.Coordinate)
+	ret := m.ctrl.Call(m, "GetDB")
+	ret0, _ := ret[0].(*mongo.Database)
+	return ret0
+}
+
+// GetDB indicates an expected call of GetDB.
+func (mr *MockUserDalMockRecorder) GetDB() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDB", reflect.TypeOf((*MockUserDal)(nil).GetDB))
+}
+
+// GetUser mocks base method.
+func (m *MockUserDal) GetUser(ctx context.Context) ([]*models.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUser", ctx)
+	ret0, _ := ret[0].([]*models.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CreateCoordinate indicates an expected call of CreateCoordinate.
-func (mr *MockCreateCoordinateDalMockRecorder) CreateCoordinate(ctx, coordinate interface{}) *gomock.Call {
+// GetUser indicates an expected call of GetUser.
+func (mr *MockUserDalMockRecorder) GetUser(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCoordinate", reflect.TypeOf((*MockCreateCoordinateDal)(nil).CreateCoordinate), ctx, coordinate)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockUserDal)(nil).GetUser), ctx)
 }
 
-// MockGetCoordinateByIdDal is a mock of GetCoordinateByIdDal interface.
-type MockGetCoordinateByIdDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetCoordinateByIdDalMockRecorder
-}
-
-// MockGetCoordinateByIdDalMockRecorder is the mock recorder for MockGetCoordinateByIdDal.
-type MockGetCoordinateByIdDalMockRecorder struct {
-	mock *MockGetCoordinateByIdDal
-}
-
-// NewMockGetCoordinateByIdDal creates a new mock instance.
-func NewMockGetCoordinateByIdDal(ctrl *gomock.Controller) *MockGetCoordinateByIdDal {
-	mock := &MockGetCoordinateByIdDal{ctrl: ctrl}
-	mock.recorder = &MockGetCoordinateByIdDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetCoordinateByIdDal) EXPECT() *MockGetCoordinateByIdDalMockRecorder {
-	return m.recorder
-}
-
-// GetCoordinateById mocks base method.
-func (m *MockGetCoordinateByIdDal) GetCoordinateById(ctx context.Context, coordinateId string) (*models.Coordinate, error) {
+// GetUserById mocks base method.
+func (m *MockUserDal) GetUserById(ctx context.Context, userId string) (*models.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCoordinateById", ctx, coordinateId)
-	ret0, _ := ret[0].(*models.Coordinate)
+	ret := m.ctrl.Call(m, "GetUserById", ctx, userId)
+	ret0, _ := ret[0].(*models.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetCoordinateById indicates an expected call of GetCoordinateById.
-func (mr *MockGetCoordinateByIdDalMockRecorder) GetCoordinateById(ctx, coordinateId interface{}) *gomock.Call {
+// GetUserById indicates an expected call of GetUserById.
+func (mr *MockUserDalMockRecorder) GetUserById(ctx, userId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCoordinateById", reflect.TypeOf((*MockGetCoordinateByIdDal)(nil).GetCoordinateById), ctx, coordinateId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserById", reflect.TypeOf((*MockUserDal)(nil).GetUserById), ctx, userId)
 }
 
-// MockGetCoordinateDal is a mock of GetCoordinateDal interface.
-type MockGetCoordinateDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockGetCoordinateDalMockRecorder
-}
-
-// MockGetCoordinateDalMockRecorder is the mock recorder for MockGetCoordinateDal.
-type MockGetCoordinateDalMockRecorder struct {
-	mock *MockGetCoordinateDal
-}
-
-// NewMockGetCoordinateDal creates a new mock instance.
-func NewMockGetCoordinateDal(ctrl *gomock.Controller) *MockGetCoordinateDal {
-	mock := &MockGetCoordinateDal{ctrl: ctrl}
-	mock.recorder = &MockGetCoordinateDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGetCoordinateDal) EXPECT() *MockGetCoordinateDalMockRecorder {
-	return m.recorder
-}
-
-// GetCoordinate mocks base method.
-func (m *MockGetCoordinateDal) GetCoordinate(ctx context.Context) ([]*models.Coordinate, error) {
+// UpdateUser mocks base method.
+func (m *MockUserDal) UpdateUser(ctx context.Context, user *models.User) (*models.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCoordinate", ctx)
-	ret0, _ := ret[0].([]*models.Coordinate)
+	ret := m.ctrl.Call(m, "UpdateUser", ctx, user)
+	ret0, _ := ret[0].(*models.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetCoordinate indicates an expected call of GetCoordinate.
-func (mr *MockGetCoordinateDalMockRecorder) GetCoordinate(ctx interface{}) *gomock.Call {
+// UpdateUser indicates an expected call of UpdateUser.
+func (mr *MockUserDalMockRecorder) UpdateUser(ctx, user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCoordinate", reflect.TypeOf((*MockGetCoordinateDal)(nil).GetCoordinate), ctx)
-}
-
-// MockUpdateCoordinateDal is a mock of UpdateCoordinateDal interface.
-type MockUpdateCoordinateDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockUpdateCoordinateDalMockRecorder
-}
-
-// MockUpdateCoordinateDalMockRecorder is the mock recorder for MockUpdateCoordinateDal.
-type MockUpdateCoordinateDalMockRecorder struct {
-	mock *MockUpdateCoordinateDal
-}
-
-// NewMockUpdateCoordinateDal creates a new mock instance.
-func NewMockUpdateCoordinateDal(ctrl *gomock.Controller) *MockUpdateCoordinateDal {
-	mock := &MockUpdateCoordinateDal{ctrl: ctrl}
-	mock.recorder = &MockUpdateCoordinateDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUpdateCoordinateDal) EXPECT() *MockUpdateCoordinateDalMockRecorder {
-	return m.recorder
-}
-
-// UpdateCoordinate mocks base method.
-func (m *MockUpdateCoordinateDal) UpdateCoordinate(ctx context.Context, coordinate *models.Coordinate) (*models.Coordinate, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateCoordinate", ctx, coordinate)
-	ret0, _ := ret[0].(*models.Coordinate)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateCoordinate indicates an expected call of UpdateCoordinate.
-func (mr *MockUpdateCoordinateDalMockRecorder) UpdateCoordinate(ctx, coordinate interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCoordinate", reflect.TypeOf((*MockUpdateCoordinateDal)(nil).UpdateCoordinate), ctx, coordinate)
-}
-
-// MockDeleteCoordinateDal is a mock of DeleteCoordinateDal interface.
-type MockDeleteCoordinateDal struct {
-	ctrl     *gomock.Controller
-	recorder *MockDeleteCoordinateDalMockRecorder
-}
-
-// MockDeleteCoordinateDalMockRecorder is the mock recorder for MockDeleteCoordinateDal.
-type MockDeleteCoordinateDalMockRecorder struct {
-	mock *MockDeleteCoordinateDal
-}
-
-// NewMockDeleteCoordinateDal creates a new mock instance.
-func NewMockDeleteCoordinateDal(ctrl *gomock.Controller) *MockDeleteCoordinateDal {
-	mock := &MockDeleteCoordinateDal{ctrl: ctrl}
-	mock.recorder = &MockDeleteCoordinateDalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDeleteCoordinateDal) EXPECT() *MockDeleteCoordinateDalMockRecorder {
-	return m.recorder
-}
-
-// DeleteCoordinate mocks base method.
-func (m *MockDeleteCoordinateDal) DeleteCoordinate(ctx context.Context, coordinateId string) (*models.Coordinate, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteCoordinate", ctx, coordinateId)
-	ret0, _ := ret[0].(*models.Coordinate)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// DeleteCoordinate indicates an expected call of DeleteCoordinate.
-func (mr *MockDeleteCoordinateDalMockRecorder) DeleteCoordinate(ctx, coordinateId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCoordinate", reflect.TypeOf((*MockDeleteCoordinateDal)(nil).DeleteCoordinate), ctx, coordinateId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockUserDal)(nil).UpdateUser), ctx, user)
 }

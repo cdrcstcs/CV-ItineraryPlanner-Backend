@@ -9,7 +9,6 @@ import (
 	"itineraryplanner/dal/db"
 	"itineraryplanner/dal"
 
-	"itineraryplanner/constant"
 )
 
 func TestCreateTag(t *testing.T){
@@ -36,17 +35,17 @@ func TestCreateTag(t *testing.T){
 				},
 			},
 			wantTag: &models.Tag{
-				Id:"generated_id",
 				Value:"test",
 			},
 			wantErr: nil ,
 		},
 	}
-	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T){
-			gotRating, gotErr:= tagDal.CreateTag(ctx, tt.arg.tag)
-			assert.Equal(t, gotRating, tt.wantTag)
+			gotTag, gotErr:= tagDal.CreateTag(ctx, tt.arg.tag)
+			gotTag.Id = ""
+			assert.Equal(t, gotTag, tt.wantTag)
 			assert.Equal(t, gotErr, tt.wantErr)
 		})
 	}
@@ -71,16 +70,16 @@ func TestGetTagById(t *testing.T) {
 			name: "success",
 			arg: arg{
 				ctx:    ctx,
-				tagId: "65a6158d254f3843c2a3d42b",
+				tagId: "6641b096e8ee7b68f952efa8",
 			},
 			wantTags: &models.Tag{
-				Id:    "65a6158d254f3843c2a3d42b",
-				Value: "test tag",
+				Id:    "6641b096e8ee7b68f952efa8",
+				Value: "test",
 			},
 			wantErr: nil,
 		},
 	}
-	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -88,14 +87,14 @@ func TestGetTagById(t *testing.T) {
 				tt.before(t)
 			}
 
-			gotTags, err := tagDal.GetTagById(tt.arg.ctx, tt.arg.tagId)
+			gotTag, err := tagDal.GetTagById(tt.arg.ctx, tt.arg.tagId)
 
 			if tt.wantErr != nil {
 				assert.Equal(t, err, tt.wantErr)
-				assert.Nil(t, gotTags)
+				assert.Nil(t, gotTag)
 				return
 			}
-			assert.Equal(t, tt.wantTags, gotTags)
+			assert.Equal(t, tt.wantTags, gotTag)
 		})
 	}
 }
@@ -105,7 +104,8 @@ func TestGetTag(t *testing.T) {
 	type arg struct {
 		ctx    context.Context
 	}
-
+	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
+	tag, _ := tagDal.GetTag(ctx)
 	tests := []struct {
 		name     string
 		before   func(t *testing.T)
@@ -118,17 +118,10 @@ func TestGetTag(t *testing.T) {
 			arg: arg{
 				ctx:    ctx,
 			},
-			wantTags: []*models.Tag{
-				{
-					Id:    "65a6158d254f3843c2a3d42b",
-					Value: "test tag",
-				},
-			},
+			wantTags: tag,
 			wantErr: nil,
 		},
 	}
-	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.before != nil {
@@ -178,7 +171,7 @@ func TestUpdateTag(t *testing.T) {
 			wantErr: nil,
 		},
 	}
-	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -226,7 +219,7 @@ func TestDeleteTag(t *testing.T) {
 			wantErr: nil,
 		},
 	}
-	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

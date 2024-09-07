@@ -9,7 +9,6 @@ import (
 
 	"itineraryplanner/common/custom_errs"
 	"itineraryplanner/dal/db"
-	"itineraryplanner/constant"
 	"itineraryplanner/models"
 	"itineraryplanner/dal"
 
@@ -35,21 +34,22 @@ func TestCreateItinerary(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				itinerary: &models.Itinerary{
-					StartTime:   time.Now(),
-					EndTime:     time.Now().Add(1 * time.Hour),
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 					CopiedId :"1",
 					UserId  : "1",
 					EventIds  :  []string {"1","2"},
+					EventCount: 2,
 					RatingId:"1",
 				},
 			},
 			wantItinerary: &models.Itinerary{
-				StartTime:   time.Now(),
-				EndTime:     time.Now().Add(1 * time.Hour),
-				Id    :"generatedId",
+				StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 				CopiedId :"1",
 				UserId  : "1",
 				EventIds  :  []string {"1","2"},
+				EventCount: 2,
 				RatingId:"1",
 			},
 		},
@@ -58,19 +58,20 @@ func TestCreateItinerary(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				itinerary: &models.Itinerary{
-					StartTime:   time.Now(),
-					EndTime:     time.Now().Add(1 * time.Hour),
+					StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+					EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
 					Id    :"1",
 					CopiedId :"1",
 					UserId  : "1",
 					EventIds  :  []string {"1","2"},
+					EventCount: 2,
 					RatingId:"1",
 				},
 			},
 			wantErr: custom_errs.DBErrCreateWithID,
 		},
 	}
-	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo()}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -109,22 +110,23 @@ func TestGetItineraryById(t *testing.T) {
 			name: "success",
 			arg: arg{
 				ctx:           ctx,
-				itineraryId:  "1234",
+				itineraryId:  "66420fdc40732b8c0653b530",
 			},
 			wantItinerary: &models.Itinerary{
-				StartTime:   time.Now(),
-				EndTime:     time.Now().Add(1 * time.Hour),
-				Id    :"1234",
+				StartTime:    time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime:      time.Date(2024, 5, 13, 5, 33, 20, 430000000, time.UTC),
+				Id    : 	"66420fdc40732b8c0653b530",
 				CopiedId :"1",
 				UserId  : "1",
 				EventIds  :  []string {"1","2"},
+				EventCount: 2,
 				RatingId:"1",
 			},
 			wantErr: nil,
 		},
 	}
 	
-	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotItinerary, err := itineraryDal.GetItineraryById(tt.arg.ctx, tt.arg.itineraryId)
@@ -133,7 +135,7 @@ func TestGetItineraryById(t *testing.T) {
 				return
 			}
 			assert.NotEmpty(t, gotItinerary)
-			assert.ElementsMatch(t, tt.wantItinerary, gotItinerary)
+			assert.Equal(t, tt.wantItinerary, gotItinerary)
 		})	
 	}
 }
@@ -143,7 +145,8 @@ func TestGetItinerary(t *testing.T) {
 	type arg struct {
 		ctx           context.Context
 	}
-	
+	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo()}
+	i, _ := itineraryDal.GetItinerary(ctx)
 	tests := []struct {
 		name            string
 		before          func(t *testing.T)
@@ -156,22 +159,11 @@ func TestGetItinerary(t *testing.T) {
 			arg: arg{
 				ctx:           ctx,
 			},
-			wantItinerary: []*models.Itinerary{
-				{
-					StartTime:   time.Now(),
-					EndTime:     time.Now().Add(1 * time.Hour),
-					Id    :"1234",
-					CopiedId :"1",
-					UserId  : "1",
-					EventIds  :  []string {"1","2"},
-					RatingId:"1",
-				},
-			},
+			wantItinerary: i,
 			wantErr: nil,
 		},
 	}
 	
-	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotItinerary, err := itineraryDal.GetItinerary(tt.arg.ctx)
@@ -210,6 +202,7 @@ func TestUpdateItinerary(t *testing.T) {
 					CopiedId :"1",
 					UserId  : "1",
 					EventIds  :  []string {"1","2"},
+					EventCount: 2,
 					RatingId:"1",
 				},
 			},
@@ -220,13 +213,14 @@ func TestUpdateItinerary(t *testing.T) {
 				CopiedId :"1",
 				UserId  : "1",
 				EventIds  :  []string {"1","2"},
+				EventCount: 2,
 				RatingId:"1",
 			},
 			wantErr: nil,
 		},
 	}
 	
-	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotItinerary, err := itineraryDal.UpdateItinerary(tt.arg.ctx, tt.arg.itinerary)
@@ -267,6 +261,7 @@ func TestDeleteItinerary(t *testing.T) {
 				CopiedId :"1",
 				UserId  : "1",
 				EventIds  :  []string {"1","2"},
+				EventCount: 2,
 				RatingId:"1",
 			},
 			wantErr: nil,
@@ -282,7 +277,7 @@ func TestDeleteItinerary(t *testing.T) {
 		},
 	}
 	
-	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo(constant.MainMongoDB)}
+	itineraryDal := &dal.ItineraryDal{MainDB: db.GetMemoMongo()}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotItinerary, err := itineraryDal.DeleteItinerary(tt.arg.ctx, tt.arg.itineraryId)

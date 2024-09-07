@@ -9,48 +9,23 @@ import (
 
 	"itineraryplanner/common/custom_errs"
 	"itineraryplanner/constant"
-	"itineraryplanner/dal"
-	"itineraryplanner/dal/db"
 	dal_inf "itineraryplanner/dal/inf"
 	"itineraryplanner/models"
 	"itineraryplanner/service/inf"
+	"itineraryplanner/common/utils"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson"
+
 )
 
-func NewCreateAttractionService(cdal dal_inf.CreateAttractionDal) inf.CreateAttractionService {
+func NewAttractionService(dal dal_inf.AttractionDal) inf.AttractionService {
 	return &AttractionService{
-		CDal: cdal,
+		Dal: dal,
 	}
-}
-func NewGetAttractionByIdService(bdal dal_inf.GetAttractionByIdDal) inf.GetAttractionByIdService {
-	return &AttractionService{
-		BDal: bdal,
-	}
-}
-func NewGetAttractionService(gdal dal_inf.GetAttractionDal) inf.GetAttractionService {
-	return &AttractionService{
-		GDal: gdal,
-	}
-}
-func NewUpdateAttractionService(udal dal_inf.UpdateAttractionDal) inf.UpdateAttractionService {
-	return &AttractionService{
-		UDal: udal,
-	}
-}
-func NewDeleteAttractionService(ddal dal_inf.DeleteAttractionDal) inf.DeleteAttractionService {
-	return &AttractionService{
-		DDal: ddal,
-	}
-}
-func NewAttractionDTOService() inf.AttractionDTOService {
-	return &AttractionService{}
 }
 
 type AttractionService struct {
-	CDal dal_inf.CreateAttractionDal
-	BDal dal_inf.GetAttractionByIdDal
-	GDal dal_inf.GetAttractionDal
-	UDal dal_inf.UpdateAttractionDal
-	DDal dal_inf.DeleteAttractionDal
+	Dal dal_inf.AttractionDal
 }
 
 func (a *AttractionService) CreateAttraction(ctx context.Context, req *models.CreateAttractionReq) (*models.CreateAttractionResp, error) {
@@ -61,11 +36,12 @@ func (a *AttractionService) CreateAttraction(ctx context.Context, req *models.Cr
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
 
-	attraction, err = a.CDal.CreateAttraction(ctx, attraction)
+	attraction, err = a.Dal.CreateAttraction(ctx, attraction)
 	if err != nil {
 		// TODO logging
 		return nil, err
 	}
+
 	dto, err := a.ConvertDBOToDTOAttraction(ctx, attraction)
 	if err != nil {
 		// TODO logging
@@ -80,98 +56,59 @@ func (a *AttractionService) ConvertDBOToDTOAttraction(ctx context.Context, att *
 	if att == nil {
 		return nil, custom_errs.ServerError
 	}
-	facade := &Facade{
-		Service: &FacadeField{
-			TS: &TagService{
-				GDal: &dal.TagDal{
-					MainDB: db.GetMemoMongo(constant.MainMongoDB),
-				},
-			},
-			CS: &CoordinateService{
-				GDal: &dal.CoordinateDal{
-					MainDB: db.GetMemoMongo(constant.MainMongoDB),
-				},
-			},
-			RS: &RatingService{
-				GDal: &dal.RatingDal{
-					MainDB: db.GetMemoMongo(constant.MainMongoDB),
-				},
-			},
-		},
+	ret := &models.AttractionDTO{}
+	if utils.IsEmpty(att.RatingId) {
+		// TODO logging here
+		return nil, custom_errs.DBErrGetWithID
 	}
-
-	attraction := &models.AttractionDTO{}
-	err:= copier.Copy(attraction, att)
+	Rcollection := a.Dal.GetDB().Collection(constant.RatingTable)
+	RObjectID, err := primitive.ObjectIDFromHex(att.RatingId)
 	if err != nil {
-		// TODO logging
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		return nil, custom_errs.DBErrIDConversion
+	}
+	Rresult := Rcollection.FindOne(ctx, bson.M{"_id": RObjectID})
+	if Rresult.Err() != nil {
+		return nil, custom_errs.DBErrGetWithID
+	}
+	var rating *models.RatingDTO
+	if err := Rresult.Decode(&rating); err != nil {
+		return nil, custom_errs.DecodeErr
+	}
+	ret.Rating = rating
+
+	for _, v := range att.TagIDs{
+		if utils.IsEmpty(v) {
+			// TODO logging here
+			return nil, custom_errs.DBErrGetWithID
+		}
+		Tcollection := a.Dal.GetDB().Collection(constant.TagTable)
+		TObjectID, err := primitive.ObjectIDFromHex(v)
+		if err != nil {
+			return nil, custom_errs.DBErrIDConversion
+		}
+		Tresult := Tcollection.FindOne(ctx, bson.M{"_id": TObjectID})
+		if Tresult.Err() != nil {
+			return nil, custom_errs.DBErrGetWithID
+		}
+		var tag *models.TagDTO
+		if err := Tresult.Decode(&tag); err != nil {
+			return nil, custom_errs.DecodeErr
+		}
+		ret.Tags = append(ret.Tags, tag)
 	}
 
-	tagsDTO := []*models.TagDTO{}
-	if att.TagIDs != nil {
-		for _, v:= range att.TagIDs {
-			req1 := &models.GetTagByIdReq{
-				Id: v,
-			}
-			resp1, err := facade.Execute(ctx, &models.ReqFacade{
-				GTRB: req1,
-			}, "GTSB")
-			if err != nil {
-				// TODO logging
-				return nil, err
-			}
-			tagsDTO = append(tagsDTO, resp1.GTRB.Tag)
-		}
-		tagMap := map[string]bool{}
-		for _, v := range tagsDTO {
-			tagMap[v.Id] = true
-		}
-		for _, v := range att.TagIDs {
-			if !tagMap[v] {
-				return nil, errors.New("invalid tag id")
-			}
-		}
-		attraction.Tags = tagsDTO
-	}
-
-	if att.CoordinateId != ""{
-		req2 := &models.GetCoordinateByIdReq{
-			Id: att.CoordinateId,
-		}
-		resp2, err := facade.Execute(ctx, &models.ReqFacade{
-			GCRB: req2,
-		}, "GCSB")
-		if err != nil {
-			// TODO logging
-			return nil, err
-		}
-		attraction.Coordinate = resp2.GCRB.Coordinate
-	}
-	if att.RatingId != ""{
-		req3 := &models.GetRatingByIdReq{
-			Id: att.RatingId,
-		}
-		resp3, err := facade.Execute(ctx, &models.ReqFacade{
-			GRRB: req3,
-		}, "GRSB")
-		if err != nil {
-			// TODO logging
-			return nil, err
-		}
-		attraction.Rating = resp3.GRRB.Rating
-	}
-	return attraction, nil
+	return ret, nil
 }
 
 func (a *AttractionService) GetAttractionById(ctx context.Context, req *models.GetAttractionByIdReq) (*models.GetAttractionByIdResp, error) {
-	attraction, err := a.BDal.GetAttractionById(ctx, req.Id)
+	attraction, err := a.Dal.GetAttractionById(ctx, req.Id)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
 
 	attraction1 := &models.Attraction{}
-	ok := copier.Copy(attraction1, attraction)
-	if ok != nil {
+	err = copier.Copy(attraction1, attraction)
+	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
@@ -184,14 +121,14 @@ func (a *AttractionService) GetAttractionById(ctx context.Context, req *models.G
 }
 
 func (a *AttractionService) GetAttraction(ctx context.Context, req *models.GetAttractionReq) (*models.GetAttractionResp, error) {
-	attractions, err := a.GDal.GetAttraction(ctx)
+	attractions, err := a.Dal.GetAttraction(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
 
 	attraction1 := []models.Attraction{}
-	ok := copier.Copy(attraction1, attractions)
-	if ok != nil {
+	err = copier.Copy(attraction1, attractions)
+	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
@@ -215,7 +152,7 @@ func (a *AttractionService) UpdateAttraction(ctx context.Context, req *models.Up
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}
 
-	attraction, err = a.UDal.UpdateAttraction(ctx, attraction)
+	attraction, err = a.Dal.UpdateAttraction(ctx, attraction)
 	if err != nil {
 		// TODO logging
 		return nil, err
@@ -230,14 +167,14 @@ func (a *AttractionService) UpdateAttraction(ctx context.Context, req *models.Up
 }
 
 func (a *AttractionService) DeleteAttraction(ctx context.Context, req *models.DeleteAttractionReq) (*models.DeleteAttractionResp, error) {
-	attraction, err := a.DDal.DeleteAttraction(ctx, req.Id)
+	attraction, err := a.Dal.DeleteAttraction(ctx, req.Id)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
 
 	attraction1 := &models.Attraction{}
-	ok := copier.Copy(attraction1, attraction)
-	if ok != nil {
+	err = copier.Copy(attraction1, attraction)
+	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
 		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
 	}

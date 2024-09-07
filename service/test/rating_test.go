@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -11,65 +10,18 @@ import (
 	"itineraryplanner/dal/mock"
 	"itineraryplanner/models"
 	"itineraryplanner/service"
-	ser_mock "itineraryplanner/service/mock"
 )
 
-func ConfigCreateRating(t *testing.T) (context.Context, *mock.MockCreateRatingDal, *ser_mock.MockRatingDTOService, *service.RatingService) {
+func ConfigRating(t *testing.T) (context.Context, *mock.MockRatingDal, *service.RatingService) {
 	ctrl := gomock.NewController(t)
 	ctx := context.Background()
-	mockC := mock.NewMockCreateRatingDal(ctrl)
-	mockDTO := ser_mock.NewMockRatingDTOService(ctrl)
-	ratingService := &service.RatingService{CDal: mockC}
-	return ctx, mockC, mockDTO, ratingService
-}
-
-func ConfigGetRating(t *testing.T) (context.Context, *mock.MockGetRatingDal, *ser_mock.MockRatingDTOService, *service.RatingService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockG := mock.NewMockGetRatingDal(ctrl)
-	mockDTO := ser_mock.NewMockRatingDTOService(ctrl)
-	ratingService := &service.RatingService{GDal: mockG}
-	return ctx, mockG, mockDTO, ratingService
-}
-
-func ConfigGetRatingById(t *testing.T) (context.Context, *mock.MockGetRatingByIdDal, *ser_mock.MockRatingDTOService, *service.RatingService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockB := mock.NewMockGetRatingByIdDal(ctrl)
-	mockDTO := ser_mock.NewMockRatingDTOService(ctrl)
-	ratingService := &service.RatingService{BDal: mockB}
-	return ctx, mockB, mockDTO, ratingService
-}
-
-func ConfigUpdateRating(t *testing.T) (context.Context, *mock.MockUpdateRatingDal, *ser_mock.MockRatingDTOService, *service.RatingService){
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockU := mock.NewMockUpdateRatingDal(ctrl)
-	mockDTO := ser_mock.NewMockRatingDTOService(ctrl)
-	ratingService := &service.RatingService{UDal: mockU}
-	return ctx, mockU, mockDTO, ratingService
-}
-func ConfigDeleteRating(t *testing.T) (context.Context, *mock.MockDeleteRatingDal, *ser_mock.MockRatingDTOService, *service.RatingService){
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockD := mock.NewMockDeleteRatingDal(ctrl)
-	mockDTO := ser_mock.NewMockRatingDTOService(ctrl)
-	ratingService := &service.RatingService{DDal: mockD}
-	return ctx, mockD, mockDTO, ratingService
-}
-
-func ConfigConvertToDTORating(t *testing.T) (context.Context, *ser_mock.MockFacadeDesignPatternService, *service.RatingService) {
-	ctrl := gomock.NewController(t)
-	ctx := context.Background()
-	mockC := mock.NewMockCreateRatingDal(ctrl)
-	mockG := mock.NewMockGetRatingDal(ctrl)
-	mockF := ser_mock.NewMockFacadeDesignPatternService(ctrl)
-	ratingService := &service.RatingService{CDal: mockC, GDal: mockG}
-	return ctx, mockF, ratingService
+	mock := mock.NewMockRatingDal(ctrl)
+	ratingService := &service.RatingService{Dal: mock}
+	return ctx, mock, ratingService
 }
 
 func TestCreateRating(t *testing.T) {
-	ctx, mockC, mockDTO, ratingService := ConfigCreateRating(t)
+	ctx, mock, ratingService := ConfigRating(t)
 
 	type arg struct {
 		req *models.CreateRatingReq
@@ -88,58 +40,22 @@ func TestCreateRating(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				req: &models.CreateRatingReq{
-					Type:     models.TypeAttraction,
-					UserId:   "test_user_id",
-					ObjectId: "test_attraction_id",
 					Score:    5,
 				},
 			},
 			before: func(t *testing.T) {
-				mockC.EXPECT().CreateRating(ctx, gomock.Any()).Return(
+				mock.EXPECT().CreateRating(ctx, gomock.Any()).Return(
 					&models.Rating{
 						Id:       "test_rating_id",
-						Type:     models.TypeAttraction,
-						UserId:   "test_user_id",
-						ObjectId: "test_attraction_id",
 						Score:    5,
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTORating(
-					ctx,
-					&models.Rating{
-						Id:       "test_rating_id",
-						Type:     models.TypeAttraction,
-						UserId:   "test_user_id",
-						ObjectId: "test_attraction_id",
-						Score:    5,
-					},
-				).Return(
-					&models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
-					},
-					nil,
-				).Do(func(ctx context.Context, rating *models.Rating) {
-					fmt.Println("ConvertDBOToDTORating called with", rating)
-				})
 			},
 			wantResp: &models.CreateRatingResp{
 				Rating: &models.RatingDTO{
-					Id:   "test_rating_id",
-					Type: "ATTRACTION",
-					User: &models.UserDTO{
-						Id: "test_user_id", 
-						Name: "test_user_name",
-					},
-					ObjectId: "test_attraction_id",
-					Score: 5,
+					Id:       "test_rating_id",
+						Score:    5,
 				},
 			},
 			wantErr: nil,
@@ -157,7 +73,7 @@ func TestCreateRating(t *testing.T) {
 }
 
 func TestGetRatingById(t *testing.T) {
-	ctx, mockB, mockDTO, ratingService := ConfigGetRatingById(t)
+	ctx, mock, ratingService := ConfigRating(t)
 
 	type arg struct {
 		req *models.GetRatingByIdReq
@@ -180,48 +96,21 @@ func TestGetRatingById(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockB.EXPECT().GetRatingById(
+				mock.EXPECT().GetRatingById(
 					ctx,
 					"test_rating_id",
 				).Return(
 					&models.Rating{
 						Id:       "test_rating_id",
-						Type:     models.TypeAttraction,
-						UserId:   "test_user_id",
-						ObjectId: "test_attraction_id",
 						Score:    5,
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTORating(
-					ctx,
-					gomock.Any(),
-				).Return(
-					&models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
-					},
-					nil,
-				).Do(func(ctx context.Context, rating *models.Rating) {
-					fmt.Println("ConvertDBOToDTORating called with", rating)
-				})
 			},
 			wantResp: &models.GetRatingByIdResp{
 				Rating: &models.RatingDTO{
-					Id:   "test_rating_id",
-					Type: "ATTRACTION",
-					User: &models.UserDTO{
-						Id: "test_user_id", 
-						Name: "test_user_name",
-					},
-					ObjectId: "test_attraction_id",
-					Score: 5,
+					Id:       "test_rating_id",
+					Score:    5,
 				},
 			},
 			wantErr: nil,
@@ -239,7 +128,7 @@ func TestGetRatingById(t *testing.T) {
 }
 
 func TestGetRating(t *testing.T) {
-	ctx, mockG, mockDTO, ratingService := ConfigGetRating(t)
+	ctx, mock, ratingService := ConfigRating(t)
 
 	type arg struct {
 		req *models.GetRatingReq
@@ -261,48 +150,21 @@ func TestGetRating(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockG.EXPECT().GetRating(ctx).Return(
+				mock.EXPECT().GetRating(ctx).Return(
 					[]*models.Rating{
 						{
 							Id:       "test_rating_id",
-							Type:     models.TypeAttraction,
-							UserId:   "test_user_id",
-							ObjectId: "test_attraction_id",
 							Score:    5,
 						},
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTORating(
-					ctx,
-					gomock.Any(),
-				).Return(
-					&models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
-					},
-					nil,
-				).Do(func(ctx context.Context, rating *models.Rating) {
-					fmt.Println("ConvertDBOToDTORating called with", rating)
-				})
 			},
 			wantResp: &models.GetRatingResp{
 				Ratings: []*models.RatingDTO{
 					{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
+						Id:       "test_rating_id",
+						Score:    5,
 					},
 				},
 			},
@@ -320,7 +182,7 @@ func TestGetRating(t *testing.T) {
 	}
 }
 func TestUpdateRating(t *testing.T) {
-	ctx, mockU, mockDTO, ratingService := ConfigUpdateRating(t)
+	ctx, mock, ratingService := ConfigRating(t)
 
 	type arg struct {
 		req *models.UpdateRatingReq
@@ -339,58 +201,23 @@ func TestUpdateRating(t *testing.T) {
 			arg: arg{
 				ctx: ctx,
 				req: &models.UpdateRatingReq{
-					Type:     models.TypeAttraction,
-					UserId:   "test_user_id",
-					ObjectId: "test_attraction_id",
-					Score:    5,
+					Id:       "test_rating_id",
+					Score:    6,
 				},
 			},
 			before: func(t *testing.T) {
-				mockU.EXPECT().UpdateRating(ctx, gomock.Any()).Return(
+				mock.EXPECT().UpdateRating(ctx, gomock.Any()).Return(
 					&models.Rating{
 						Id:       "test_rating_id",
-						Type:     models.TypeAttraction,
-						UserId:   "test_user_id",
-						ObjectId: "test_attraction_id",
-						Score:    5,
+						Score:    6,
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTORating(
-					ctx,
-					&models.Rating{
-						Id:       "test_rating_id",
-						Type:     models.TypeAttraction,
-						UserId:   "test_user_id",
-						ObjectId: "test_attraction_id",
-						Score:    5,
-					},
-				).Return(
-					&models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
-					},
-					nil,
-				).Do(func(ctx context.Context, rating *models.Rating) {
-					fmt.Println("ConvertDBOToDTORating called with", rating)
-				})
 			},
 			wantResp: &models.UpdateRatingResp{
 				Rating: &models.RatingDTO{
-					Id:   "test_rating_id",
-					Type: "ATTRACTION",
-					User: &models.UserDTO{
-						Id: "test_user_id", 
-						Name: "test_user_name",
-					},
-					ObjectId: "test_attraction_id",
-					Score: 5,
+					Id:       "test_rating_id",
+					Score:    6,
 				},
 			},
 			wantErr: nil,
@@ -408,7 +235,7 @@ func TestUpdateRating(t *testing.T) {
 }
 
 func TestDeleteRating(t *testing.T) {
-	ctx, mockD, mockDTO, ratingService := ConfigDeleteRating(t)
+	ctx, mock, ratingService := ConfigRating(t)
 
 	type arg struct {
 		req *models.DeleteRatingReq
@@ -431,54 +258,21 @@ func TestDeleteRating(t *testing.T) {
 				},
 			},
 			before: func(t *testing.T) {
-				mockD.EXPECT().DeleteRating(
+				mock.EXPECT().DeleteRating(
 					ctx,
 					"test_rating_id",
 				).Return(
 					&models.Rating{
 						Id:       "test_rating_id",
-						Type:     models.TypeAttraction,
-						UserId:   "test_user_id",
-						ObjectId: "test_attraction_id",
 						Score:    5,
 					},
 					nil,
 				)
-				mockDTO.EXPECT().ConvertDBOToDTORating(
-					ctx,
-					&models.Rating{
-						Id:       "test_rating_id",
-						Type:     models.TypeAttraction,
-						UserId:   "test_user_id",
-						ObjectId: "test_attraction_id",
-						Score:    5,
-					},
-				).Return(
-					&models.RatingDTO{
-						Id:   "test_rating_id",
-						Type: "ATTRACTION",
-						User: &models.UserDTO{
-							Id: "test_user_id", 
-							Name: "test_user_name",
-						},
-						ObjectId: "test_attraction_id",
-						Score: 5,
-					},
-					nil,
-				).Do(func(ctx context.Context, rating *models.Rating) {
-					fmt.Println("ConvertDBOToDTORating called with", rating)
-				})
 			},
 			wantResp: &models.DeleteRatingResp{
 				Rating: &models.RatingDTO{
-					Id:   "test_rating_id",
-					Type: "ATTRACTION",
-					User: &models.UserDTO{
-						Id: "test_user_id", 
-						Name: "test_user_name",
-					},
-					ObjectId: "test_attraction_id",
-					Score: 5,
+					Id:       "test_rating_id",
+					Score:    5,
 				},
 			},
 			wantErr: nil,
@@ -497,8 +291,8 @@ func TestDeleteRating(t *testing.T) {
 
 
 func TestConvertRatingToDTORating(t *testing.T) {
-	ctx, mockF, ratingService := ConfigConvertToDTORating(t)
-
+	ctx:= context.Background()
+	ratingService:= service.RatingService{}
 	type arg struct {
 		req *models.Rating
 		ctx context.Context
@@ -506,7 +300,6 @@ func TestConvertRatingToDTORating(t *testing.T) {
 
 	tests := []struct {
 		name     string
-		before   func(t *testing.T)
 		arg      arg
 		wantResp *models.RatingDTO
 		wantErr  error
@@ -516,32 +309,13 @@ func TestConvertRatingToDTORating(t *testing.T) {
 			arg: arg{
 				req: &models.Rating{
 					Id:       "test_rating_id",
-					Type:     models.TypeAttraction,
-					UserId:   "test_user_id",
-					ObjectId: "test_attraction_id",
 					Score:    5,
 				},
 				ctx: ctx,
 			},
-			before: func(t *testing.T) {
-				mockF.EXPECT().Execute(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					&models.RespFacade{
-						GURB: &models.GetUserByIdResp{
-							User: &models.UserDTO{Id: "test_user_id", Name: "test_user_name"},
-						},
-					},
-					nil,
-				)
-			},
 			wantResp: &models.RatingDTO{
-				Id:   "test_rating_id",
-				Type: "ATTRACTION",
-				User: &models.UserDTO{
-					Id: "test_user_id", 
-					Name: "test_user_name",
-				},
-				ObjectId: "test_attraction_id",
-				Score: 5,
+				Id:       "test_rating_id",
+				Score:    5,
 			},
 			wantErr: nil,
 		},
@@ -549,7 +323,6 @@ func TestConvertRatingToDTORating(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.before(t)
 			gotResp, err := ratingService.ConvertDBOToDTORating(tt.arg.ctx, tt.arg.req)
 			assert.Equal(t, tt.wantResp, gotResp)
 			assert.Equal(t, tt.wantErr, err)
