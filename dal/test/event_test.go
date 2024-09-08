@@ -371,8 +371,8 @@ func TestDeleteEvent(t *testing.T) {
                 ctx:     ctx,
                 eventId: "", 
             },
-            wantEvent: &models.Event{},
-            wantErr:   custom_errs.DBErrDeleteWithID,
+            wantEvent: nil,
+            wantErr:   custom_errs.DBErrIDConversion,
         },
     }
     eventDal := &dal.EventDal{MainDB: db.GetMemoMongo()}
@@ -386,6 +386,7 @@ func TestDeleteEvent(t *testing.T) {
                 assert.Equal(t, tt.wantEvent, gotEvent)
                 return
             }
+			tt.wantEvent.Id = eventId
             assert.Equal(t, tt.wantEvent, gotEvent)
         })
     }
