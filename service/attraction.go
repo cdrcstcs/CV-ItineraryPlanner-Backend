@@ -1,12 +1,8 @@
 package service
-
 import (
 	"context"
-
 	"github.com/jinzhu/copier"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-
 	"itineraryplanner/common/custom_errs"
 	"itineraryplanner/constant"
 	dal_inf "itineraryplanner/dal/inf"
@@ -15,172 +11,144 @@ import (
 	"itineraryplanner/common/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/bson"
-
 )
-
 func NewAttractionService(dal dal_inf.AttractionDal) inf.AttractionService {
 	return &AttractionService{
 		Dal: dal,
 	}
 }
-
 type AttractionService struct {
 	Dal dal_inf.AttractionDal
 }
-
 func (a *AttractionService) CreateAttraction(ctx context.Context, req *models.CreateAttractionReq) (*models.CreateAttractionResp, error) {
 	attraction := &models.Attraction{}
 	err := copier.Copy(attraction, req)
 	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		return nil, custom_errs.InvalidInput
 	}
-
 	attraction, err = a.Dal.CreateAttraction(ctx, attraction)
 	if err != nil {
-		// TODO logging
 		return nil, err
 	}
-
 	dto, err := a.ConvertDBOToDTOAttraction(ctx, attraction)
 	if err != nil {
-		// TODO logging
 		return nil, err
 	}
-
 	return &models.CreateAttractionResp{Attraction: dto}, nil
 }
-
 func (a *AttractionService) ConvertDBOToDTOAttraction(ctx context.Context, att *models.Attraction) (*models.AttractionDTO, error) {
-	log.Info().Msg("ConvertDBOToDTOAttraction is called") // Add this line for debugging
+	log.Info().Msg("ConvertDBOToDTOAttraction is called")
 	if att == nil {
 		return nil, custom_errs.ServerError
 	}
-	ret := &models.AttractionDTO{}
 	if utils.IsEmpty(att.RatingId) {
-		// TODO logging here
-		return nil, custom_errs.DBErrGetWithID
+		return nil, custom_errs.ErrDataNotFound
 	}
-	Rcollection := a.Dal.GetDB().Collection(constant.RatingTable)
-	RObjectID, err := primitive.ObjectIDFromHex(att.RatingId)
+	ratingcollection := a.Dal.GetDB().Collection(constant.RatingTable)
+	ratingObjectID, err := primitive.ObjectIDFromHex(att.RatingId)
 	if err != nil {
 		return nil, custom_errs.DBErrIDConversion
 	}
-	Rresult := Rcollection.FindOne(ctx, bson.M{"_id": RObjectID})
-	if Rresult.Err() != nil {
+	ratingResult := ratingcollection.FindOne(ctx, bson.M{"_id": ratingObjectID})
+	if ratingResult.Err() != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-	var rating *models.RatingDTO
-	if err := Rresult.Decode(&rating); err != nil {
+	var ratingDTO *models.RatingDTO
+	if err := ratingResult.Decode(&ratingDTO); err != nil {
 		return nil, custom_errs.DecodeErr
 	}
-	ret.Rating = rating
-
+	ret := &models.AttractionDTO{}
+	ret.Rating = ratingDTO
+	tagCollection := a.Dal.GetDB().Collection(constant.TagTable)
 	for _, v := range att.TagIDs{
 		if utils.IsEmpty(v) {
-			// TODO logging here
-			return nil, custom_errs.DBErrGetWithID
+			return nil, custom_errs.ErrDataNotFound
 		}
-		Tcollection := a.Dal.GetDB().Collection(constant.TagTable)
-		TObjectID, err := primitive.ObjectIDFromHex(v)
+		tagObjectID, err := primitive.ObjectIDFromHex(v)
 		if err != nil {
 			return nil, custom_errs.DBErrIDConversion
 		}
-		Tresult := Tcollection.FindOne(ctx, bson.M{"_id": TObjectID})
-		if Tresult.Err() != nil {
+		tagResult := tagCollection.FindOne(ctx, bson.M{"_id": tagObjectID})
+		if tagResult.Err() != nil {
 			return nil, custom_errs.DBErrGetWithID
 		}
 		var tag *models.TagDTO
-		if err := Tresult.Decode(&tag); err != nil {
+		if err := tagResult.Decode(&tag); err != nil {
 			return nil, custom_errs.DecodeErr
 		}
 		ret.Tags = append(ret.Tags, tag)
 	}
-
 	return ret, nil
 }
-
 func (a *AttractionService) GetAttractionById(ctx context.Context, req *models.GetAttractionByIdReq) (*models.GetAttractionByIdResp, error) {
 	attraction, err := a.Dal.GetAttractionById(ctx, req.Id)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-
 	attraction1 := &models.Attraction{}
 	err = copier.Copy(attraction1, attraction)
 	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		return nil, custom_errs.InvalidInput
 	}
 	dto, err := a.ConvertDBOToDTOAttraction(ctx, attraction1)
 	if err != nil {
-		// TODO logging
 		return nil, err
 	}
 	return &models.GetAttractionByIdResp{Attraction: dto}, nil
 }
-
 func (a *AttractionService) GetAttraction(ctx context.Context, req *models.GetAttractionReq) (*models.GetAttractionResp, error) {
 	attractions, err := a.Dal.GetAttraction(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-
 	attraction1 := []models.Attraction{}
 	err = copier.Copy(attraction1, attractions)
 	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		return nil, custom_errs.InvalidInput
 	}
 	dtos := make([]*models.AttractionDTO, 0)
 	for _, v := range attraction1 {
 		dto, err := a.ConvertDBOToDTOAttraction(ctx, &v)
 		if err != nil {
-			// TODO logging
 			return nil, err
 		}
 		dtos = append(dtos, dto)
 	}
 	return &models.GetAttractionResp{Attractions: dtos}, nil
 }
-
 func (a *AttractionService) UpdateAttraction(ctx context.Context, req *models.UpdateAttractionReq) (*models.UpdateAttractionResp, error) {
 	attraction := &models.Attraction{}
 	err := copier.Copy(attraction, req)
 	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		return nil, custom_errs.InvalidInput
 	}
-
 	attraction, err = a.Dal.UpdateAttraction(ctx, attraction)
 	if err != nil {
-		// TODO logging
 		return nil, err
 	}
 	dto, err := a.ConvertDBOToDTOAttraction(ctx, attraction)
 	if err != nil {
-		// TODO logging
 		return nil, err
 	}
-
 	return &models.UpdateAttractionResp{Attraction: dto}, nil
 }
-
 func (a *AttractionService) DeleteAttraction(ctx context.Context, req *models.DeleteAttractionReq) (*models.DeleteAttractionResp, error) {
 	attraction, err := a.Dal.DeleteAttraction(ctx, req.Id)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-
 	attraction1 := &models.Attraction{}
 	err = copier.Copy(attraction1, attraction)
 	if err != nil {
 		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, errors.Wrap(custom_errs.ServerError, err.Error())
+		return nil, custom_errs.InvalidInput
 	}
 	dto, err := a.ConvertDBOToDTOAttraction(ctx, attraction1)
 	if err != nil {
-		// TODO logging
 		return nil, err
 	}
 	return &models.DeleteAttractionResp{Attraction: dto}, nil

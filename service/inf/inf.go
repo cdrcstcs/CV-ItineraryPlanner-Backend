@@ -1,11 +1,8 @@
 package inf
-
 import (
 	"context"
-
 	"itineraryplanner/models"
 )
-
 //go:generate mockgen -source=./inf.go -destination=../mock/service_inf_mock.go -package=mock .
 type AttractionService interface {
 	CreateAttraction(ctx context.Context, req *models.CreateAttractionReq) (*models.CreateAttractionResp, error)
@@ -13,7 +10,6 @@ type AttractionService interface {
 	GetAttraction(ctx context.Context, req *models.GetAttractionReq) (*models.GetAttractionResp, error)
 	UpdateAttraction(ctx context.Context, req *models.UpdateAttractionReq) (*models.UpdateAttractionResp, error)
 	DeleteAttraction(ctx context.Context, req *models.DeleteAttractionReq) (*models.DeleteAttractionResp, error)
-
 }
 type EventService interface {
 	CreateEvent(ctx context.Context, req *models.CreateEventReq) (*models.CreateEventResp, error)
@@ -50,8 +46,3 @@ type UserService interface {
 	UpdateUser(ctx context.Context, req *models.UpdateUserReq)(*models.UpdateUserResp,error)
 	DeleteUser(ctx context.Context,req *models.DeleteUserReq) (*models.DeleteUserResp, error)
 }
-type SearchEngineService interface{
-	SearchEngine(ctx context.Context,req *models.SearchEngineReq) (*models.SearchEngineResp, error)
-}
-
-
