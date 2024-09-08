@@ -1,5 +1,4 @@
 package test
-
 import (
 	"context"
 	"itineraryplanner/models"
@@ -10,15 +9,12 @@ import (
 	"itineraryplanner/dal"
 
 )
-
 func TestCreateTag(t *testing.T){
 	ctx := context.Background()
-
 	type arg struct {
 		ctx context.Context
 		tag *models.Tag
 	}
-
 	tests:=[]struct {
 		name string 
 		before func(t *testing.T)
@@ -50,62 +46,68 @@ func TestCreateTag(t *testing.T){
 		})
 	}
 }
-
 func TestGetTagById(t *testing.T) {
-	ctx := context.Background()
-
-	type arg struct {
-		ctx    context.Context
-		tagId   string
-	}
-
-	tests := []struct {
-		name     string
-		before   func(t *testing.T)
-		arg      arg
-		wantErr  error
-		wantTags *models.Tag
-	}{
-		{
-			name: "success",
-			arg: arg{
-				ctx:    ctx,
-				tagId: "6641b096e8ee7b68f952efa8",
-			},
-			wantTags: &models.Tag{
-				Id:    "6641b096e8ee7b68f952efa8",
-				Value: "test",
-			},
-			wantErr: nil,
-		},
-	}
-	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.before != nil {
-				tt.before(t)
-			}
-
-			gotTag, err := tagDal.GetTagById(tt.arg.ctx, tt.arg.tagId)
-
-			if tt.wantErr != nil {
-				assert.Equal(t, err, tt.wantErr)
-				assert.Nil(t, gotTag)
-				return
-			}
-			assert.Equal(t, tt.wantTags, gotTag)
-		})
-	}
+    ctx := context.Background()
+    tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
+    type arg struct {
+        ctx    context.Context
+        tagId  string
+    }
+    tests := []struct {
+        name     string
+        before   func(t *testing.T) string 
+        arg      arg
+        wantTag *models.Tag
+        wantErr  error
+    }{
+        {
+            name: "success",
+            before: func(t *testing.T) string {
+                tag := &models.Tag{
+                    Value: "test", 
+                }
+                newTag, err := tagDal.CreateTag(ctx, tag) 
+                if err != nil {
+                    t.Fatalf("Failed to create tag: %v", err)
+                }
+                return newTag.Id 
+            },
+            arg: arg{
+                ctx:    ctx,
+                tagId:  "", 
+            },
+            wantTag: &models.Tag{
+                Value: "test",
+            },
+            wantErr: nil,
+        },
+    }
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            tagId := tt.before(t)
+            tt.arg.tagId = tagId
+			tt.wantTag.Id = tagId 
+            gotTag, gotErr := tagDal.GetTagById(tt.arg.ctx, tt.arg.tagId)
+            if tt.wantErr != nil {
+                assert.Equal(t, tt.wantErr, gotErr)
+                assert.Nil(t, gotTag)
+                return
+            } 
+			assert.Nil(t, gotErr)
+            assert.Equal(t, tt.wantTag, gotTag)
+        })
+    }
 }
 func TestGetTag(t *testing.T) {
 	ctx := context.Background()
-
 	type arg struct {
 		ctx    context.Context
 	}
 	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
-	tag, _ := tagDal.GetTag(ctx)
+	tags, err := tagDal.GetTag(ctx)
+	if err != nil {
+        t.Fatalf("Failed to retrieve expected tags: %v", err)
+    }
 	tests := []struct {
 		name     string
 		before   func(t *testing.T)
@@ -118,7 +120,7 @@ func TestGetTag(t *testing.T) {
 			arg: arg{
 				ctx:    ctx,
 			},
-			wantTags: tag,
+			wantTags: tags,
 			wantErr: nil,
 		},
 	}
@@ -127,9 +129,7 @@ func TestGetTag(t *testing.T) {
 			if tt.before != nil {
 				tt.before(t)
 			}
-
 			gotTags, err := tagDal.GetTag(tt.arg.ctx)
-
 			if tt.wantErr != nil {
 				assert.Equal(t, err, tt.wantErr)
 				assert.Nil(t, gotTags)
@@ -139,103 +139,111 @@ func TestGetTag(t *testing.T) {
 		})
 	}
 }
-
 func TestUpdateTag(t *testing.T) {
-	ctx := context.Background()
-
-	type arg struct {
-		ctx    context.Context
-		tag 	*models.Tag
-	}
-
-	tests := []struct {
-		name     string
-		before   func(t *testing.T)
-		arg      arg
-		wantErr  error
-		wantTags *models.Tag
-	}{
-		{
-			name: "success",
-			arg: arg{
-				ctx:    ctx,
-				tag:   &models.Tag{
-					Id:    "65a6158d254f3843c2a3d42b",
-					Value: "test tag",
-				},
-			},
-			wantTags: &models.Tag{
-				Id:    "65a6158d254f3843c2a3d42b",
-				Value: "test tag",
-			},
-			wantErr: nil,
-		},
-	}
-	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.before != nil {
-				tt.before(t)
-			}
-
-			gotTags, err := tagDal.UpdateTag(tt.arg.ctx, tt.arg.tag)
-
-			if tt.wantErr != nil {
-				assert.Equal(t, err, tt.wantErr)
-				assert.Nil(t, gotTags)
-				return
-			}
-			assert.Equal(t, tt.wantTags, gotTags)
-		})
-	}
+    ctx := context.Background()
+    tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
+    type arg struct {
+        ctx    context.Context
+        tag    *models.Tag
+    }
+    tests := []struct {
+        name     string
+        before   func(t *testing.T) string 
+        arg      arg
+        wantTag *models.Tag
+        wantErr  error
+    }{
+        {
+            name: "success",
+            before: func(t *testing.T) string {
+                tag := &models.Tag{
+                    Value: "initial tag", 
+                }
+                newTag, err := tagDal.CreateTag(ctx, tag) 
+                if err != nil {
+                    t.Fatalf("Failed to create tag: %v", err)
+                }
+                return newTag.Id 
+            },
+            arg: arg{
+                ctx: ctx,
+                tag: &models.Tag{
+                    Id:    "", 
+                    Value: "updated tag", 
+                },
+            },
+            wantTag: &models.Tag{
+				Id: "",
+                Value: "updated tag",
+            },
+            wantErr: nil,
+        },
+    }
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            tagId := tt.before(t)
+            tt.arg.tag.Id = tagId 
+			tt.wantTag.Id = tagId
+            gotTag, gotErr := tagDal.UpdateTag(tt.arg.ctx, tt.arg.tag)
+            if tt.wantErr != nil {
+                assert.Equal(t, tt.wantErr, gotErr)
+                assert.Nil(t, gotTag)
+                return
+            }
+            assert.Equal(t, tt.wantTag, gotTag)
+			assert.Nil(t, gotErr)
+        })
+    }
 }
-
 func TestDeleteTag(t *testing.T) {
-	ctx := context.Background()
-
-	type arg struct {
-		ctx    context.Context
-		tagId string
-	}
-
-	tests := []struct {
-		name     string
-		before   func(t *testing.T)
-		arg      arg
-		wantErr  error
-		wantTags *models.Tag
-	}{
-		{
-			name: "success",
-			arg: arg{
-				ctx:    ctx,
-				tagId: "65a6158d254f3843c2a3d42b",
-			},
-			wantTags: &models.Tag{
-				Id:    "65a6158d254f3843c2a3d42b",
-				Value: "test tag",
-			},
-			wantErr: nil,
-		},
-	}
-	tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.before != nil {
-				tt.before(t)
-			}
-
-			gotTags, err := tagDal.DeleteTag(tt.arg.ctx, tt.arg.tagId)
-
-			if tt.wantErr != nil {
-				assert.Equal(t, err, tt.wantErr)
-				assert.Nil(t, gotTags)
-				return
-			}
-			assert.Equal(t, tt.wantTags, gotTags)
-		})
-	}
+    ctx := context.Background()
+    tagDal := &dal.TagDal{MainDB: db.GetMemoMongo()}
+    type arg struct {
+        ctx    context.Context
+        tagId  string
+    }
+    tests := []struct {
+        name     string
+        before   func(t *testing.T) string 
+        arg      arg
+        wantTag *models.Tag
+        wantErr  error
+    }{
+        {
+            name: "success",
+            before: func(t *testing.T) string {
+                tag := &models.Tag{
+                    Value: "test tag", 
+                }
+                newTag, err := tagDal.CreateTag(ctx, tag)
+                if err != nil {
+                    t.Fatalf("Failed to create tag: %v", err)
+                }
+                return newTag.Id 
+            },
+            arg: arg{
+                ctx:   ctx,
+                tagId: "", 
+            },
+            wantTag: &models.Tag{
+                Value: "test tag", 
+            },
+            wantErr: nil,
+        },
+    }
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            tagId := tt.before(t)
+            tt.arg.tagId = tagId 
+			tt.wantTag.Id = tagId
+            gotTag, gotErr := tagDal.DeleteTag(tt.arg.ctx, tt.arg.tagId)
+            if tt.wantErr != nil {
+                assert.Equal(t, tt.wantErr, gotErr)
+                assert.Nil(t, gotTag)
+                return
+            }
+            assert.Equal(t, tt.wantTag, gotTag)
+			assert.Nil(t, gotErr)
+        })
+    }
 }
-
