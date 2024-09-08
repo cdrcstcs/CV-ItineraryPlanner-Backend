@@ -62,19 +62,13 @@ func (t *TagService) GetTagById(ctx context.Context, req *models.GetTagByIdReq) 
 	return &models.GetTagByIdResp{Tag: dto}, nil
 }
 func (t *TagService) GetTag(ctx context.Context, req *models.GetTagReq) (*models.GetTagResp, error) {
-	Tags, err := t.Dal.GetTag(ctx)
+	tags, err := t.Dal.GetTag(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-	Tag1 := []models.Tag{}
-	ok := copier.Copy(Tag1, Tags)
-	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
-		return nil, custom_errs.InvalidInput
-	}
 	dtos := make([]*models.TagDTO, 0)
-	for _, v := range Tag1 {
-		dto, err := t.ConvertDBOToDTOTag(ctx, &v)
+	for _, v := range tags {
+		dto, err := t.ConvertDBOToDTOTag(ctx, v)
 		if err != nil {
 			return nil, err
 		}

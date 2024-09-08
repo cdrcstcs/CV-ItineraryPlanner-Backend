@@ -89,19 +89,13 @@ func (i *ItineraryService) GetItineraryById(ctx context.Context, req *models.Get
 	return &models.GetItineraryByIdResp{Itinerary: dto}, nil
 }
 func (i *ItineraryService) GetItinerary(ctx context.Context, req *models.GetItineraryReq) (*models.GetItineraryResp, error) {
-	Itineraries, err := i.Dal.GetItinerary(ctx)
+	itineraries, err := i.Dal.GetItinerary(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-	Itinerary1 := []models.Itinerary{}
-	ok := copier.Copy(Itinerary1, Itineraries)
-	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
-		return nil, custom_errs.InvalidInput
-	}
 	dtos := make([]*models.ItineraryDTO, 0)
-	for _, v := range Itinerary1 {
-		dto, err := i.ConvertDBOToDTOItinerary(ctx, &v)
+	for _, v := range itineraries {
+		dto, err := i.ConvertDBOToDTOItinerary(ctx, v)
 		if err != nil {
 			return nil, err
 		}

@@ -62,19 +62,13 @@ func (r *RatingService) GetRatingById(ctx context.Context, req *models.GetRating
 	return &models.GetRatingByIdResp{Rating: dto}, nil
 }
 func (r *RatingService) GetRating(ctx context.Context, req *models.GetRatingReq) (*models.GetRatingResp, error) {
-	Ratings, err := r.Dal.GetRating(ctx)
+	ratings, err := r.Dal.GetRating(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-	Rating1 := []models.Rating{}
-	ok := copier.Copy(Rating1, Ratings)
-	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
-		return nil, custom_errs.InvalidInput
-	}
 	dtos := make([]*models.RatingDTO, 0)
-	for _, v := range Rating1 {
-		dto, err := r.ConvertDBOToDTORating(ctx, &v)
+	for _, v := range ratings {
+		dto, err := r.ConvertDBOToDTORating(ctx, v)
 		if err != nil {
 			return nil, err
 		}

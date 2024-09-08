@@ -63,19 +63,13 @@ func (e *EventService) GetEventById(ctx context.Context, req *models.GetEventByI
 	return &models.GetEventByIdResp{Event: dto}, nil
 }
 func (e *EventService) GetEvent(ctx context.Context, req *models.GetEventReq) (*models.GetEventResp, error) {
-	Events, err := e.Dal.GetEvent(ctx)
+	events, err := e.Dal.GetEvent(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-	Event1 := []models.Event{}
-	err = copier.Copy(Event1, Events)
-	if err != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, custom_errs.InvalidInput
-	}
 	dtos := make([]*models.EventDTO, 0)
-	for _, v := range Event1 {
-		dto, err := e.ConvertDBOToDTOEvent(ctx, &v)
+	for _, v := range events {
+		dto, err := e.ConvertDBOToDTOEvent(ctx, v)
 		if err != nil {
 			return nil, err
 		}

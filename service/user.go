@@ -62,19 +62,13 @@ func (u *UserService) GetUserById(ctx context.Context, req *models.GetUserByIdRe
 	return &models.GetUserByIdResp{User: dto}, nil
 }
 func (u *UserService) GetUser(ctx context.Context, req *models.GetUserReq) (*models.GetUserResp, error) {
-	Users, err := u.Dal.GetUser(ctx)
+	users, err := u.Dal.GetUser(ctx)
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-	User1 := []models.User{}
-	ok := copier.Copy(User1, Users)
-	if ok != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", ok.Error())
-		return nil, custom_errs.InvalidInput
-	}
 	dtos := make([]*models.UserDTO, 0)
-	for _, v := range User1 {
-		dto, err := u.ConvertDBOToDTOUser(ctx, &v)
+	for _, user := range users {
+		dto, err := u.ConvertDBOToDTOUser(ctx, user)
 		if err != nil {
 			return nil, err
 		}

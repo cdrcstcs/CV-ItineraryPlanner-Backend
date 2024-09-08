@@ -110,15 +110,9 @@ func (a *AttractionService) GetAttraction(ctx context.Context, req *models.GetAt
 	if err != nil {
 		return nil, custom_errs.DBErrGetWithID
 	}
-	attraction1 := []models.Attraction{}
-	err = copier.Copy(attraction1, attractions)
-	if err != nil {
-		log.Error().Ctx(ctx).Msgf("copier fails %v", err)
-		return nil, custom_errs.InvalidInput
-	}
 	dtos := make([]*models.AttractionDTO, 0)
-	for _, v := range attraction1 {
-		dto, err := a.ConvertDBOToDTOAttraction(ctx, &v)
+	for _, v := range attractions {
+		dto, err := a.ConvertDBOToDTOAttraction(ctx, v)
 		if err != nil {
 			return nil, err
 		}
