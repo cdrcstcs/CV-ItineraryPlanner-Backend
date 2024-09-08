@@ -75,7 +75,7 @@ func (r *RatingDal) CreateRating(ctx context.Context, rating *models.Rating) (*m
 	if !ok {
 		return nil, custom_errs.DBErrIDConversion
 	}
-	rating.Id = insertedID.String()
+	rating.Id = insertedID.Hex()
 	return rating, nil
 }
 func (r *RatingDal) UpdateRating(ctx context.Context, rating *models.Rating) (*models.Rating, error) {

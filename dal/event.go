@@ -75,7 +75,7 @@ func (e *EventDal) CreateEvent(ctx context.Context, event *models.Event) (*model
 	if !ok {
 		return nil, custom_errs.DBErrIDConversion
 	}
-	event.Id = insertedID.String()
+	event.Id = insertedID.Hex()
 	return event, nil
 }
 func (e *EventDal) UpdateEvent(ctx context.Context, event *models.Event) (*models.Event, error) {

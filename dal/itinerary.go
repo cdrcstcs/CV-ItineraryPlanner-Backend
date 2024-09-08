@@ -75,7 +75,7 @@ func (i *ItineraryDal) CreateItinerary(ctx context.Context, itinerary *models.It
 	if !ok {
 		return nil, custom_errs.DBErrIDConversion
 	}
-	itinerary.Id = insertedID.String()
+	itinerary.Id = insertedID.Hex()
 	return itinerary, nil
 }
 func (i *ItineraryDal) UpdateItinerary(ctx context.Context, itinerary *models.Itinerary) (*models.Itinerary, error) {

@@ -75,7 +75,7 @@ func (t *TagDal) CreateTag(ctx context.Context, tag *models.Tag) (*models.Tag, e
 	if !ok {
 		return nil, custom_errs.DBErrIDConversion
 	}
-	tag.Id = insertedID.String()
+	tag.Id = insertedID.Hex()
 	return tag, nil
 }
 func (t *TagDal) UpdateTag(ctx context.Context, tag *models.Tag) (*models.Tag, error) {

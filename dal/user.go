@@ -75,7 +75,7 @@ func (t *UserDal) CreateUser(ctx context.Context, User *models.User) (*models.Us
 	if !ok {
 		return nil, custom_errs.DBErrIDConversion
 	}
-	User.Id = insertedID.String()
+	User.Id = insertedID.Hex()
 	return User, nil
 }
 func (u *UserDal) UpdateUser(ctx context.Context, user *models.User) (*models.User, error) {
