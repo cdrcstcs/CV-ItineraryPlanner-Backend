@@ -41,7 +41,17 @@ func (i *ItineraryService) ConvertDBOToDTOItinerary(ctx context.Context, iti *mo
 	if iti == nil {
 		return nil, custom_errs.ServerError
 	}
-	ret := &models.ItineraryDTO{}
+	ret := &models.ItineraryDTO{
+		Id: iti.Id,
+		CopiedId: iti.CopiedId,
+		CopiedName: iti.CopiedName,
+		Name: iti.Name,
+		UserId: iti.UserId,
+		StartTime: iti.StartTime,
+		EndTime: iti.EndTime,
+		EventIds: iti.EventIds,
+		EventCount: iti.EventCount,
+	}
 	if utils.IsEmpty(iti.RatingId) {
 		return nil, custom_errs.DBErrGetWithID
 	}

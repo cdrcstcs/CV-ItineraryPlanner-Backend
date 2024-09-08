@@ -58,7 +58,14 @@ func (a *AttractionService) ConvertDBOToDTOAttraction(ctx context.Context, att *
 	if err := ratingResult.Decode(&ratingDTO); err != nil {
 		return nil, custom_errs.DecodeErr
 	}
-	ret := &models.AttractionDTO{}
+	ret := &models.AttractionDTO{
+		Id: att.Id,
+		Name: att.Name,
+		Address: att.Address,
+		X: att.X,
+		Y: att.Y,
+		City: att.City,
+	}
 	ret.Rating = ratingDTO
 	tagCollection := a.Dal.GetDB().Collection(constant.TagTable)
 	for _, v := range att.TagIDs{

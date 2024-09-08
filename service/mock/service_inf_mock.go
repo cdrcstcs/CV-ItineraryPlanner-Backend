@@ -35,6 +35,21 @@ func (m *MockAttractionService) EXPECT() *MockAttractionServiceMockRecorder {
 	return m.recorder
 }
 
+// ConvertDBOToDTOAttraction mocks base method.
+func (m *MockAttractionService) ConvertDBOToDTOAttraction(ctx context.Context, att *models.Attraction) (*models.AttractionDTO, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ConvertDBOToDTOAttraction", ctx, att)
+	ret0, _ := ret[0].(*models.AttractionDTO)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ConvertDBOToDTOAttraction indicates an expected call of ConvertDBOToDTOAttraction.
+func (mr *MockAttractionServiceMockRecorder) ConvertDBOToDTOAttraction(ctx, att interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConvertDBOToDTOAttraction", reflect.TypeOf((*MockAttractionService)(nil).ConvertDBOToDTOAttraction), ctx, att)
+}
+
 // CreateAttraction mocks base method.
 func (m *MockAttractionService) CreateAttraction(ctx context.Context, req *models.CreateAttractionReq) (*models.CreateAttractionResp, error) {
 	m.ctrl.T.Helper()
@@ -131,6 +146,21 @@ func NewMockEventService(ctrl *gomock.Controller) *MockEventService {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockEventService) EXPECT() *MockEventServiceMockRecorder {
 	return m.recorder
+}
+
+// ConvertDBOToDTOEvent mocks base method.
+func (m *MockEventService) ConvertDBOToDTOEvent(ctx context.Context, att *models.Event) (*models.EventDTO, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ConvertDBOToDTOEvent", ctx, att)
+	ret0, _ := ret[0].(*models.EventDTO)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ConvertDBOToDTOEvent indicates an expected call of ConvertDBOToDTOEvent.
+func (mr *MockEventServiceMockRecorder) ConvertDBOToDTOEvent(ctx, att interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConvertDBOToDTOEvent", reflect.TypeOf((*MockEventService)(nil).ConvertDBOToDTOEvent), ctx, att)
 }
 
 // CreateEvent mocks base method.
@@ -231,6 +261,21 @@ func (m *MockRatingService) EXPECT() *MockRatingServiceMockRecorder {
 	return m.recorder
 }
 
+// ConvertDBOToDTORating mocks base method.
+func (m *MockRatingService) ConvertDBOToDTORating(ctx context.Context, att *models.Rating) (*models.RatingDTO, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ConvertDBOToDTORating", ctx, att)
+	ret0, _ := ret[0].(*models.RatingDTO)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ConvertDBOToDTORating indicates an expected call of ConvertDBOToDTORating.
+func (mr *MockRatingServiceMockRecorder) ConvertDBOToDTORating(ctx, att interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConvertDBOToDTORating", reflect.TypeOf((*MockRatingService)(nil).ConvertDBOToDTORating), ctx, att)
+}
+
 // CreateRating mocks base method.
 func (m *MockRatingService) CreateRating(ctx context.Context, req *models.CreateRatingReq) (*models.CreateRatingResp, error) {
 	m.ctrl.T.Helper()
@@ -327,6 +372,21 @@ func NewMockItineraryService(ctrl *gomock.Controller) *MockItineraryService {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockItineraryService) EXPECT() *MockItineraryServiceMockRecorder {
 	return m.recorder
+}
+
+// ConvertDBOToDTOItinerary mocks base method.
+func (m *MockItineraryService) ConvertDBOToDTOItinerary(ctx context.Context, att *models.Itinerary) (*models.ItineraryDTO, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ConvertDBOToDTOItinerary", ctx, att)
+	ret0, _ := ret[0].(*models.ItineraryDTO)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ConvertDBOToDTOItinerary indicates an expected call of ConvertDBOToDTOItinerary.
+func (mr *MockItineraryServiceMockRecorder) ConvertDBOToDTOItinerary(ctx, att interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConvertDBOToDTOItinerary", reflect.TypeOf((*MockItineraryService)(nil).ConvertDBOToDTOItinerary), ctx, att)
 }
 
 // CreateItinerary mocks base method.
@@ -427,6 +487,21 @@ func (m *MockTagService) EXPECT() *MockTagServiceMockRecorder {
 	return m.recorder
 }
 
+// ConvertDBOToDTOTag mocks base method.
+func (m *MockTagService) ConvertDBOToDTOTag(ctx context.Context, att *models.Tag) (*models.TagDTO, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ConvertDBOToDTOTag", ctx, att)
+	ret0, _ := ret[0].(*models.TagDTO)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ConvertDBOToDTOTag indicates an expected call of ConvertDBOToDTOTag.
+func (mr *MockTagServiceMockRecorder) ConvertDBOToDTOTag(ctx, att interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConvertDBOToDTOTag", reflect.TypeOf((*MockTagService)(nil).ConvertDBOToDTOTag), ctx, att)
+}
+
 // CreateTag mocks base method.
 func (m *MockTagService) CreateTag(ctx context.Context, req *models.CreateTagReq) (*models.CreateTagResp, error) {
 	m.ctrl.T.Helper()
@@ -523,6 +598,21 @@ func NewMockUserService(ctrl *gomock.Controller) *MockUserService {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
+}
+
+// ConvertDBOToDTOUser mocks base method.
+func (m *MockUserService) ConvertDBOToDTOUser(ctx context.Context, att *models.User) (*models.UserDTO, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ConvertDBOToDTOUser", ctx, att)
+	ret0, _ := ret[0].(*models.UserDTO)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ConvertDBOToDTOUser indicates an expected call of ConvertDBOToDTOUser.
+func (mr *MockUserServiceMockRecorder) ConvertDBOToDTOUser(ctx, att interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ConvertDBOToDTOUser", reflect.TypeOf((*MockUserService)(nil).ConvertDBOToDTOUser), ctx, att)
 }
 
 // CreateUser mocks base method.

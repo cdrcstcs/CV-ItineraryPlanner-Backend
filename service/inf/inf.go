@@ -10,6 +10,7 @@ type AttractionService interface {
 	GetAttraction(ctx context.Context, req *models.GetAttractionReq) (*models.GetAttractionResp, error)
 	UpdateAttraction(ctx context.Context, req *models.UpdateAttractionReq) (*models.UpdateAttractionResp, error)
 	DeleteAttraction(ctx context.Context, req *models.DeleteAttractionReq) (*models.DeleteAttractionResp, error)
+	ConvertDBOToDTOAttraction(ctx context.Context, att *models.Attraction) (*models.AttractionDTO, error)
 }
 type EventService interface {
 	CreateEvent(ctx context.Context, req *models.CreateEventReq) (*models.CreateEventResp, error)
@@ -17,6 +18,7 @@ type EventService interface {
 	GetEvent(ctx context.Context, req *models.GetEventReq) (*models.GetEventResp, error)
 	UpdateEvent(ctx context.Context, req *models.UpdateEventReq)(*models.UpdateEventResp,error)
 	DeleteEvent(ctx context.Context,req *models.DeleteEventReq) (*models.DeleteEventResp, error)
+	ConvertDBOToDTOEvent(ctx context.Context, att *models.Event) (*models.EventDTO, error)
 }
 type RatingService interface {
 	CreateRating(ctx context.Context, req *models.CreateRatingReq) (*models.CreateRatingResp, error)
@@ -24,6 +26,7 @@ type RatingService interface {
 	GetRating(ctx context.Context, req *models.GetRatingReq) (*models.GetRatingResp, error)
 	UpdateRating(ctx context.Context, req *models.UpdateRatingReq)(*models.UpdateRatingResp,error)
 	DeleteRating(ctx context.Context,req *models.DeleteRatingReq) (*models.DeleteRatingResp, error)
+	ConvertDBOToDTORating(ctx context.Context, att *models.Rating) (*models.RatingDTO, error)
 }
 type ItineraryService interface {
 	CreateItinerary(ctx context.Context, req *models.CreateItineraryReq) (*models.CreateItineraryResp, error)
@@ -31,6 +34,7 @@ type ItineraryService interface {
 	GetItinerary(ctx context.Context, req *models.GetItineraryReq) (*models.GetItineraryResp, error)
 	UpdateItinerary(ctx context.Context, req *models.UpdateItineraryReq)(*models.UpdateItineraryResp,error)
 	DeleteItinerary(ctx context.Context,req *models.DeleteItineraryReq) (*models.DeleteItineraryResp, error)
+	ConvertDBOToDTOItinerary(ctx context.Context, att *models.Itinerary) (*models.ItineraryDTO, error)
 }
 type TagService interface {
 	CreateTag(ctx context.Context, req *models.CreateTagReq) (*models.CreateTagResp, error)
@@ -38,6 +42,7 @@ type TagService interface {
 	GetTag(ctx context.Context, req *models.GetTagReq) (*models.GetTagResp, error)
 	UpdateTag(ctx context.Context, req *models.UpdateTagReq)(*models.UpdateTagResp,error)
 	DeleteTag(ctx context.Context,req *models.DeleteTagReq) (*models.DeleteTagResp, error)
+	ConvertDBOToDTOTag(ctx context.Context, att *models.Tag) (*models.TagDTO, error)
 }
 type UserService interface {
 	CreateUser(ctx context.Context, req *models.CreateUserReq) (*models.CreateUserResp, error)
@@ -45,4 +50,5 @@ type UserService interface {
 	GetUser(ctx context.Context, req *models.GetUserReq) (*models.GetUserResp, error)
 	UpdateUser(ctx context.Context, req *models.UpdateUserReq)(*models.UpdateUserResp,error)
 	DeleteUser(ctx context.Context,req *models.DeleteUserReq) (*models.DeleteUserResp, error)
+	ConvertDBOToDTOUser(ctx context.Context, att *models.User) (*models.UserDTO, error)
 }
