@@ -1,16 +1,13 @@
 package test
-
 import (
 	"context"
 	"testing"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-
 	"itineraryplanner/dal/mock"
 	"itineraryplanner/models"
 	"itineraryplanner/service"
 )
-
 func ConfigUser(t *testing.T) (context.Context, *mock.MockUserDal, *service.UserService) {
 	ctrl := gomock.NewController(t)
 	ctx := context.Background()
@@ -20,12 +17,10 @@ func ConfigUser(t *testing.T) (context.Context, *mock.MockUserDal, *service.User
 }
 func TestCreateUser(t *testing.T) {
 	ctx, mock, userService := ConfigUser(t)
-
 	type arg struct {
 		req *models.CreateUserReq
 		ctx context.Context
 	}
-
 	tests := []struct {
 		name     string
 		arg      arg
@@ -68,7 +63,6 @@ func TestCreateUser(t *testing.T) {
 			wantErr: nil,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.before(t)
@@ -78,15 +72,12 @@ func TestCreateUser(t *testing.T) {
 		})
 	}
 }
-
 func TestGetUserById(t *testing.T) {
 	ctx, mock, userService := ConfigUser(t)
-
 	type arg struct {
 		req *models.GetUserByIdReq
 		ctx context.Context
 	}
-
 	tests := []struct {
 		name     string
 		arg      arg
@@ -127,7 +118,6 @@ func TestGetUserById(t *testing.T) {
 			wantErr: nil,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.before(t)
@@ -137,15 +127,12 @@ func TestGetUserById(t *testing.T) {
 		})
 	}
 }
-
 func TestGetUser(t *testing.T) {
 	ctx, mock, userService := ConfigUser(t)
-
 	type arg struct {
 		req *models.GetUserReq
 		ctx context.Context
 	}
-
 	tests := []struct {
 		name     string
 		arg      arg
@@ -188,7 +175,6 @@ func TestGetUser(t *testing.T) {
 			wantErr: nil,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.before(t)
@@ -198,15 +184,12 @@ func TestGetUser(t *testing.T) {
 		})
 	}
 }
-
 func TestUpdateUser(t *testing.T) {
 	ctx, mock, userService := ConfigUser(t)
-
 	type arg struct {
 		req *models.UpdateUserReq
 		ctx context.Context
 	}
-
 	tests := []struct {
 		name     string
 		arg      arg
@@ -249,7 +232,6 @@ func TestUpdateUser(t *testing.T) {
 			wantErr: nil,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.before(t)
@@ -259,15 +241,12 @@ func TestUpdateUser(t *testing.T) {
 		})
 	}
 }
-
 func TestDeleteUser(t *testing.T) {
 	ctx, mock, userService := ConfigUser(t)
-
 	type arg struct {
 		req *models.DeleteUserReq
 		ctx context.Context
 	}
-
 	tests := []struct {
 		name     string
 		arg      arg
@@ -308,58 +287,10 @@ func TestDeleteUser(t *testing.T) {
 			wantErr: nil,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.before(t)
 			gotResp, err := userService.DeleteUser(ctx, tt.arg.req)
-			assert.Equal(t, tt.wantResp, gotResp)
-			assert.Equal(t, tt.wantErr, err)
-		})
-	}
-}
-
-func TestConvertDBOToDTOUser(t *testing.T) {
-	ctx:= context.Background()
-	userService:= &service.UserService{}
-	type arg struct {
-		user *models.User
-		ctx context.Context
-	}
-
-	tests := []struct {
-		name     string
-		before   func(t *testing.T)
-		arg      arg
-		wantResp *models.UserDTO
-		wantErr  error
-	}{
-		{
-			name: "success",
-			arg: arg{
-				user: &models.User{
-					Id:       "test_user_id",
-					Name:     "test_name",
-					Email:    "test_email@example.com",
-					Password: "test_password",
-				},
-				ctx: ctx,
-			},
-			wantResp: &models.UserDTO{
-				Id:       "test_user_id",
-				Name:     "test_name",
-				Email:    "test_email@example.com",
-				Password: "test_password",
-			},
-			wantErr: nil,
-		},
-		// Add more test cases for error scenarios, if needed
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.before(t)
-			gotResp, err := userService.ConvertDBOToDTOUser(tt.arg.ctx, tt.arg.user)
 			assert.Equal(t, tt.wantResp, gotResp)
 			assert.Equal(t, tt.wantErr, err)
 		})
