@@ -9,12 +9,12 @@ import (
 	"testing"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
+	"time"
 )
 func TestCreateUser_Validation(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockService := mock.NewMockUserService(ctrl)
-	validUUID := uuid.New().String()
 	controller := &controllers.UserController{
 		Ser:       mockService,
 		Validator: validator.New(),
@@ -27,25 +27,31 @@ func TestCreateUser_Validation(t *testing.T) {
 		{
 			name: "valid request",
 			req: &models.CreateUserReq{
-				Name:       "test",
-				Address:    "test",
-				X:          1,
-				Y:          1,
-				TagIDs:     []string{validUUID, validUUID},
-				RatingId:   validUUID,
-				City:       "test",
+				Name: "test", 
+				Password: "test",    
+				Email: "test@gmail.com",       
+				EmailPassword: "test",
+				Phone: "test",         
+				Token: "test",         
+				UserType: "USER",    
+				RefreshToken: "test",
+				CreatedAt: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),   
+				UpdatedAt: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),    
 			},
 			wantErr: nil,
 		},
 		{
-			name: "invalid request (missing Name)",
+			name: "invalid request (missing token)",
 			req: &models.CreateUserReq{
-				Address:    "test",
-				X:          1,
-				Y:          1,
-				TagIDs:     []string{validUUID, validUUID},
-				RatingId:   validUUID,
-				City:       "test",
+				Name: "test", 
+				Password: "test",    
+				Email: "test@gmail.com",       
+				EmailPassword: "test",
+				Phone: "test",         
+				UserType: "USER",    
+				RefreshToken: "test",
+				CreatedAt: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),   
+				UpdatedAt: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
 			},
 			wantErr: custom_errs.ErrServiceError, 
 		},
@@ -125,13 +131,16 @@ func TestUpdateUser_Validation(t *testing.T) {
 			name: "valid request",
 			req: &models.UpdateUserReq{
 				Id: validUUID,
-				Name: "test",
-				Address: "test",
-				X: 1,
-				Y: 1,
-				TagIDs: []string{validUUID, validUUID},
-				RatingId: validUUID,
-				City: "test",
+				Name: "test", 
+				Password: "test",    
+				Email: "test@gmail.com",       
+				EmailPassword: "test",
+				Phone: "test",         
+				Token: "test",         
+				UserType: "USER",    
+				RefreshToken: "test",
+				CreatedAt: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),   
+				UpdatedAt: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
 			},
 			wantErr: nil,
 		},
@@ -139,13 +148,16 @@ func TestUpdateUser_Validation(t *testing.T) {
 			name: "invalid request (empty Id)",
 			req: &models.UpdateUserReq{
 				Id: "",
-				Name: "test",
-				Address: "test",
-				X: 1,
-				Y: 1,
-				TagIDs: []string{validUUID, validUUID},
-				RatingId: validUUID,
-				City: "test",
+				Name: "test", 
+				Password: "test",    
+				Email: "test@gmail.com",       
+				EmailPassword: "test",
+				Phone: "test",         
+				Token: "test",         
+				UserType: "USER",    
+				RefreshToken: "test",
+				CreatedAt: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),   
+				UpdatedAt: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
 			},
 			wantErr: custom_errs.ErrServiceError, 
 		},

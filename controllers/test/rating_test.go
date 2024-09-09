@@ -14,7 +14,6 @@ func TestCreateRating_Validation(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockService := mock.NewMockRatingService(ctrl)
-	validUUID := uuid.New().String()
 	controller := &controllers.RatingController{
 		Ser:       mockService,
 		Validator: validator.New(),
@@ -27,25 +26,13 @@ func TestCreateRating_Validation(t *testing.T) {
 		{
 			name: "valid request",
 			req: &models.CreateRatingReq{
-				Name:       "test",
-				Address:    "test",
-				X:          1,
-				Y:          1,
-				TagIDs:     []string{validUUID, validUUID},
-				RatingId:   validUUID,
-				City:       "test",
+				Score: 1,
 			},
 			wantErr: nil,
 		},
 		{
-			name: "invalid request (missing Name)",
+			name: "invalid request (missing score)",
 			req: &models.CreateRatingReq{
-				Address:    "test",
-				X:          1,
-				Y:          1,
-				TagIDs:     []string{validUUID, validUUID},
-				RatingId:   validUUID,
-				City:       "test",
 			},
 			wantErr: custom_errs.ErrServiceError, 
 		},
@@ -125,13 +112,7 @@ func TestUpdateRating_Validation(t *testing.T) {
 			name: "valid request",
 			req: &models.UpdateRatingReq{
 				Id: validUUID,
-				Name: "test",
-				Address: "test",
-				X: 1,
-				Y: 1,
-				TagIDs: []string{validUUID, validUUID},
-				RatingId: validUUID,
-				City: "test",
+				Score: 1,
 			},
 			wantErr: nil,
 		},
@@ -139,13 +120,7 @@ func TestUpdateRating_Validation(t *testing.T) {
 			name: "invalid request (empty Id)",
 			req: &models.UpdateRatingReq{
 				Id: "",
-				Name: "test",
-				Address: "test",
-				X: 1,
-				Y: 1,
-				TagIDs: []string{validUUID, validUUID},
-				RatingId: validUUID,
-				City: "test",
+				Score: 1,
 			},
 			wantErr: custom_errs.ErrServiceError, 
 		},

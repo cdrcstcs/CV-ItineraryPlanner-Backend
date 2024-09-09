@@ -14,7 +14,6 @@ func TestCreateTag_Validation(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockService := mock.NewMockTagService(ctrl)
-	validUUID := uuid.New().String()
 	controller := &controllers.TagController{
 		Ser:       mockService,
 		Validator: validator.New(),
@@ -27,25 +26,13 @@ func TestCreateTag_Validation(t *testing.T) {
 		{
 			name: "valid request",
 			req: &models.CreateTagReq{
-				Name:       "test",
-				Address:    "test",
-				X:          1,
-				Y:          1,
-				TagIDs:     []string{validUUID, validUUID},
-				RatingId:   validUUID,
-				City:       "test",
+				Value: "test",
 			},
 			wantErr: nil,
 		},
 		{
-			name: "invalid request (missing Name)",
+			name: "invalid request (missing value)",
 			req: &models.CreateTagReq{
-				Address:    "test",
-				X:          1,
-				Y:          1,
-				TagIDs:     []string{validUUID, validUUID},
-				RatingId:   validUUID,
-				City:       "test",
 			},
 			wantErr: custom_errs.ErrServiceError, 
 		},
@@ -125,13 +112,7 @@ func TestUpdateTag_Validation(t *testing.T) {
 			name: "valid request",
 			req: &models.UpdateTagReq{
 				Id: validUUID,
-				Name: "test",
-				Address: "test",
-				X: 1,
-				Y: 1,
-				TagIDs: []string{validUUID, validUUID},
-				RatingId: validUUID,
-				City: "test",
+				Value: "test",
 			},
 			wantErr: nil,
 		},
@@ -139,13 +120,7 @@ func TestUpdateTag_Validation(t *testing.T) {
 			name: "invalid request (empty Id)",
 			req: &models.UpdateTagReq{
 				Id: "",
-				Name: "test",
-				Address: "test",
-				X: 1,
-				Y: 1,
-				TagIDs: []string{validUUID, validUUID},
-				RatingId: validUUID,
-				City: "test",
+				Value: "test",
 			},
 			wantErr: custom_errs.ErrServiceError, 
 		},

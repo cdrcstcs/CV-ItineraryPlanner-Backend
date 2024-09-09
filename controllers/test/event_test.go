@@ -9,6 +9,7 @@ import (
 	"testing"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
+	"time"
 )
 func TestCreateEvent_Validation(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -27,25 +28,21 @@ func TestCreateEvent_Validation(t *testing.T) {
 		{
 			name: "valid request",
 			req: &models.CreateEventReq{
-				Name:       "test",
-				Address:    "test",
-				X:          1,
-				Y:          1,
-				TagIDs:     []string{validUUID, validUUID},
-				RatingId:   validUUID,
-				City:       "test",
+				StartTime: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				AttractionId: validUUID,
+				AttractionName: "test",
+				Description: "test",
 			},
 			wantErr: nil,
 		},
 		{
-			name: "invalid request (missing Name)",
+			name: "invalid request (start time)",
 			req: &models.CreateEventReq{
-				Address:    "test",
-				X:          1,
-				Y:          1,
-				TagIDs:     []string{validUUID, validUUID},
-				RatingId:   validUUID,
-				City:       "test",
+				EndTime: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				AttractionId: validUUID,
+				AttractionName: "test",
+				Description: "test",
 			},
 			wantErr: custom_errs.ErrServiceError, 
 		},
@@ -125,13 +122,11 @@ func TestUpdateEvent_Validation(t *testing.T) {
 			name: "valid request",
 			req: &models.UpdateEventReq{
 				Id: validUUID,
-				Name: "test",
-				Address: "test",
-				X: 1,
-				Y: 1,
-				TagIDs: []string{validUUID, validUUID},
-				RatingId: validUUID,
-				City: "test",
+				StartTime: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				AttractionId: validUUID,
+				AttractionName: "test",
+				Description: "test",
 			},
 			wantErr: nil,
 		},
@@ -139,13 +134,11 @@ func TestUpdateEvent_Validation(t *testing.T) {
 			name: "invalid request (empty Id)",
 			req: &models.UpdateEventReq{
 				Id: "",
-				Name: "test",
-				Address: "test",
-				X: 1,
-				Y: 1,
-				TagIDs: []string{validUUID, validUUID},
-				RatingId: validUUID,
-				City: "test",
+				StartTime: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				EndTime: time.Date(2024, 5, 13, 4, 33, 20, 430000000, time.UTC),
+				AttractionId: validUUID,
+				AttractionName: "test",
+				Description: "test",
 			},
 			wantErr: custom_errs.ErrServiceError, 
 		},
