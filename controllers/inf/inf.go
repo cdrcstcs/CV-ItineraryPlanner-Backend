@@ -1,13 +1,9 @@
 package inf
-
 import (
 	"context"
-
 	"itineraryplanner/models"
 )
-
 //go:generate mockgen -source=./inf.go -destination=../mock/controllers_inf_mock.go -package=mock .
-
 type AttractionController interface {
 	CreateAttraction(ctx context.Context, req *models.CreateAttractionReq) (*models.CreateAttractionResp, error)
 	GetAttraction(ctx context.Context, req *models.GetAttractionReq) (*models.GetAttractionResp,error)
@@ -28,13 +24,6 @@ type EventController interface {
 	GetEventById(ctx context.Context, req *models.GetEventByIdReq) (*models.GetEventByIdResp,error)
 	UpdateEvent(ctx context.Context, req *models.UpdateEventReq) (*models.UpdateEventResp, error)
 	DeleteEvent(ctx context.Context, req *models.DeleteEventReq) (*models.DeleteEventResp,error)
-}
-type CoordinateController interface {
-	CreateCoordinate(ctx context.Context, req *models.CreateCoordinateReq) (*models.CreateCoordinateResp, error)
-	GetCoordinate(ctx context.Context, req *models.GetCoordinateReq) (*models.GetCoordinateResp,error)
-	GetCoordinateById(ctx context.Context, req *models.GetCoordinateByIdReq) (*models.GetCoordinateByIdResp,error)
-	UpdateCoordinate(ctx context.Context, req *models.UpdateCoordinateReq) (*models.UpdateCoordinateResp, error)
-	DeleteCoordinate(ctx context.Context, req *models.DeleteCoordinateReq) (*models.DeleteCoordinateResp,error)
 }
 type TagController interface {
 	CreateTag(ctx context.Context, req *models.CreateTagReq) (*models.CreateTagResp, error)
@@ -57,8 +46,3 @@ type RatingController interface {
 	UpdateRating(ctx context.Context, req *models.UpdateRatingReq) (*models.UpdateRatingResp, error)
 	DeleteRating(ctx context.Context, req *models.DeleteRatingReq) (*models.DeleteRatingResp,error)
 }
-type SearchEngineController interface {
-	SearchEngine(ctx context.Context, req *models.SearchEngineReq) (*models.SearchEngineResp, error)
-}
-
-

@@ -1,42 +1,62 @@
 package controllers
-
 import (
 	"context"
-
+	"errors"
 	"itineraryplanner/controllers/inf"
 	"itineraryplanner/models"
 	service_inf "itineraryplanner/service/inf"
+	"github.com/go-playground/validator/v10"
 )
-
+type TagController struct {
+	Ser       service_inf.TagService
+	Validator *validator.Validate
+}
 func NewTagController(ser service_inf.TagService) inf.TagController {
 	return &TagController{
-		ser: ser,
+		Ser:       ser,
+		Validator: validator.New(),
 	}
 }
-type TagController struct {
-	ser service_inf.TagService
+func (t *TagController) validateRequest(req interface{}) error {
+	err := t.Validator.Struct(req)
+	if err != nil {
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			return err
+		}
+		var errMsg string
+		for _, err := range err.(validator.ValidationErrors) {
+			errMsg += err.Field() + " " + err.Tag() + ", "
+		}
+		if len(errMsg) > 0 {
+			return errors.New(errMsg)
+		}
+	}
+	return nil
 }
-
 func (t *TagController) CreateTag(ctx context.Context, req *models.CreateTagReq) (*models.CreateTagResp, error) {
-	// we usually do request checking here at this layer, or can even do permission checking.
-	// For now, I will leave it empty and just call service
-	return t.ser.CreateTag(ctx, req)
+	if err := t.validateRequest(req); err != nil {
+		return nil, err
+	}
+	return t.Ser.CreateTag(ctx, req)
 }
-
 func (t *TagController) GetTag(ctx context.Context, req *models.GetTagReq) (*models.GetTagResp, error) {
-	return t.ser.GetTag(ctx, req)
+	return t.Ser.GetTag(ctx, req)
 }
 func (t *TagController) GetTagById(ctx context.Context, req *models.GetTagByIdReq) (*models.GetTagByIdResp, error) {
-	return t.ser.GetTagById(ctx, req)
+	if err := t.validateRequest(req); err != nil {
+		return nil, err
+	}
+	return t.Ser.GetTagById(ctx, req)
 }
-
 func (t *TagController) UpdateTag(ctx context.Context, req *models.UpdateTagReq) (*models.UpdateTagResp, error) {
-	// we usually do request checking here at this layer, or can even do permission checking.
-	// For now, I will leave it empty and just call service
-	return t.ser.UpdateTag(ctx, req)
+	if err := t.validateRequest(req); err != nil {
+		return nil, err
+	}
+	return t.Ser.UpdateTag(ctx, req)
 }
-
 func (t *TagController) DeleteTag(ctx context.Context, req *models.DeleteTagReq) (*models.DeleteTagResp, error) {
-	return t.ser.DeleteTag(ctx, req)
+	if err := t.validateRequest(req); err != nil {
+		return nil, err
+	}
+	return t.Ser.DeleteTag(ctx, req)
 }
-
