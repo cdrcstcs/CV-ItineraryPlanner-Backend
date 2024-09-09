@@ -2,6 +2,7 @@ package inf
 import(
 	"github.com/gin-gonic/gin"
 )
+//go:generate mockgen -source=./inf.go -destination=../mock/main_controllers_inf_mock.go -package=mock .
 type MainAttractionController interface {
 	CreateAttraction(c *gin.Context)
 	GetAttraction(c *gin.Context)

@@ -1,71 +1,8 @@
-package main
-import (
-	"flag"
-	"os"
-	"github.com/gin-gonic/gin"
-	"itineraryplanner/common/config"
-	"itineraryplanner/maincontrollers/initialize"
+package route 
+import(
 	"itineraryplanner/maincontrollers/inf"
+	"github.com/gin-gonic/gin"
 )
-func main() {
-	flags := getFlags()
-	config.InitGlobalConfig(flags.configPath)
-	MA, err := initialize.InitializeMainAttractionController()
-	if err != nil {
-		os.Exit(1)
-		return
-	}
-	MI, err := initialize.InitializeMainItineraryController()
-	if err != nil {
-		os.Exit(1)
-		return
-	}
-	ME, err := initialize.InitializeMainEventController()
-	if err != nil {
-		os.Exit(1)
-		return
-	}
-	MR, err := initialize.InitializeMainRatingController()
-	if err != nil {
-		os.Exit(1)
-		return
-	}
-	MU, err := initialize.InitializeMainUserController()
-	if err != nil {
-		os.Exit(1)
-		return
-	}
-	MT, err := initialize.InitializeMainTagController()
-	if err != nil {
-		os.Exit(1)
-		return
-	}
-	r := gin.Default()
-	RouteA(r, MA)
-	RouteI(r, MI)
-	RouteE(r, ME)
-	RouteR(r, MR)
-	RouteU(r, MU)
-	RouteT(r, MT)
-	err = r.Run("localhost:8100")
-	if err != nil {
-		os.Exit(1)
-		return
-	}
-}
-type flags struct {
-	configPath string
-}
-func getFlags() flags {
-	filePath := flag.String("config", "./config/local_config.json", "config path")
-	flag.Parse()
-	if filePath == nil || *filePath == "" {
-		panic("empty config file path")
-	}
-	return flags{
-		configPath: *filePath,
-	}
-}
 func RouteA(r *gin.Engine, a inf.MainAttractionController) {
 	r.POST("/attraction", a.CreateAttraction)
 	r.GET("/attraction", a.GetAttraction)
