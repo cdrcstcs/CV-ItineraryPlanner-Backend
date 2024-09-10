@@ -591,38 +591,3 @@ func (mr *MockMainTagControllerMockRecorder) UpdateTag(c interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTag", reflect.TypeOf((*MockMainTagController)(nil).UpdateTag), c)
 }
-
-// MockMainSearchEngineController is a mock of MainSearchEngineController interface.
-type MockMainSearchEngineController struct {
-	ctrl     *gomock.Controller
-	recorder *MockMainSearchEngineControllerMockRecorder
-}
-
-// MockMainSearchEngineControllerMockRecorder is the mock recorder for MockMainSearchEngineController.
-type MockMainSearchEngineControllerMockRecorder struct {
-	mock *MockMainSearchEngineController
-}
-
-// NewMockMainSearchEngineController creates a new mock instance.
-func NewMockMainSearchEngineController(ctrl *gomock.Controller) *MockMainSearchEngineController {
-	mock := &MockMainSearchEngineController{ctrl: ctrl}
-	mock.recorder = &MockMainSearchEngineControllerMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockMainSearchEngineController) EXPECT() *MockMainSearchEngineControllerMockRecorder {
-	return m.recorder
-}
-
-// SearchEngine mocks base method.
-func (m *MockMainSearchEngineController) SearchEngine(c *gin.Context) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SearchEngine", c)
-}
-
-// SearchEngine indicates an expected call of SearchEngine.
-func (mr *MockMainSearchEngineControllerMockRecorder) SearchEngine(c interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchEngine", reflect.TypeOf((*MockMainSearchEngineController)(nil).SearchEngine), c)
-}

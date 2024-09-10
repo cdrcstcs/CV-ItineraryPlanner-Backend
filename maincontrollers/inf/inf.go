@@ -52,6 +52,3 @@ type MainTagController interface {
 	UpdateTag(c *gin.Context)
 	DeleteTag(c *gin.Context)
 }
-type MainSearchEngineController interface{
-	SearchEngine(c *gin.Context)
-}
